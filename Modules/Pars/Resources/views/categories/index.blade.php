@@ -3,7 +3,8 @@
     <div class="container">
         <div class="row">
             <h1>КАТЕГОРИИ</h1>
-            <div class="row" style="margin-left: 12px">  <form id=actionParsCategories" action="{{route('CategoriesParse')}}" method="GET" style="margin: 6px;">
+            <div class="row" style="margin-left: 12px">
+                <form id=actionParsCategories" action="{{route('CategoriesPars')}}" method="GET" style="margin: 6px;">
                     @method('GET')
                     @csrf
                     <button class="btn btn-success" type="submit">Спарсить>>></button>
@@ -11,7 +12,12 @@
                 <form id=actionParsCategories" action="{{route('CategoriesUpdate')}}" method="GET" style="margin: 6px;">
                     @method('GET')
                     @csrf
-                    <button class="btn btn-success" type="submit">Обновить</button>
+                    <button class="btn btn-success" type="submit">Обновить кол-во</button>
+                </form>
+                <form  action="{{route('ProdСategoriesPars')}}" method="GET" style="margin: 6px;">
+                    @method('GET')
+                    @csrf
+                    <button class="btn btn-success" type="submit">Обновить товары</button>
                 </form>
 
             </div>
@@ -29,7 +35,11 @@
         <div class="row">
             @if(count($inactCategories))
                 <div class="col-sm-6">
-                    <div style="margin-left: 10px" class="row"><h2>Неактивные</h2>  <button  style="margin-left: 10px"class="btn btn-success" type="submit" onclick="PostActiveCategory()">Активировать выделенные</button></div>
+                    <div style="margin-left: 10px" class="row"><h2>Неактивные</h2>
+                        <button style="margin-left: 10px" class="btn btn-success" type="submit"
+                                onclick="PostActiveCategory()">Активировать выделенные
+                        </button>
+                    </div>
                     <table class="table table-dark">
                         <thead>
                         <tr>
@@ -44,7 +54,8 @@
                             <tr>
                                 <th scope="row">{{ $loop->iteration }}</th>
                                 <td><a target="_blank" href="https://5element.by{{$category->url }}"
-                                       style="color:#F5F5F5">{{ $category->name }}({{ $category->products_cnt }})</a> </td>
+                                       style="color:#F5F5F5">{{ $category->name }}({{ $category->products_cnt }})</a>
+                                </td>
 
                                 {{--<td>{{ $category->url }}</td>--}}
                                 <td><input @if ($category->active) checked @endif class="check-data"
@@ -53,17 +64,10 @@
                                 <td>
                                     <div class="container">
                                         <div class="row">
-                                            {{--<form action="{{route('CategoryDestroy',[$category->id])}}" method="POST"--}}
-                                            {{--style="margin-right: 5px;">--}}
-                                            {{--@method('DELETE')--}}
-                                            {{--@csrf--}}
-                                            {{--<button class="btn btn-danger" type="submit">Delete</button>--}}
-                                            {{--</form>--}}
-
                                             <form action="{{route('CategoryActive',[$category->id])}}" method="GET">
                                                 @method('GET')
                                                 @csrf
-                                                <button class="btn btn-danger" type="submit">Aктивировать</button>
+                                                <button class="btn btn-danger" type="submit">+</button>
                                             </form>
                                         </div>
                                     </div>
@@ -77,13 +81,13 @@
             @endif
             @if(count($actCategories))
                 <div class="col-sm-6">
-                    <h2>Активные</h2>
+                    <h2>Активные Категорий:{{count($actCategories)}} </h2>
                     <table class="table table-active">
                         <thead>
                         <tr>
                             <th scope="col">#</th>
                             <th scope="col">Категория</th>
-                            <th scope="col">Активность</th>
+                            {{--<th scope="col">Активность</th>--}}
                             <th scope="col">Действие</th>
                         </tr>
                         </thead>
@@ -92,24 +96,25 @@
                             <tr>
                                 <th scope="row">{{ $loop->iteration }}</th>
                                 <td><a target="_blank" href="https://5element.by{{$category->url }}"
-                                       style="color:#000000">{{ $category->name }}({{ $category->products_cnt }})</a></td>
+                                       style="color:#000000">{{ $category->name }}({{ count($category->products) }}
+                                        из {{ $category->products_cnt }})</a></td>
                                 {{--<td>{{ $category->url }}</td>--}}
-                                <td><input @if ($category->active) checked @endif class="check-data"
-                                           id="{{$category->id}}"
-                                           type="checkbox" onclick="getCheckCategories({{$category->id}})" checked></td>
+                                {{--<td><input @if ($category->active) checked @endif class="check-data"--}}
+                                           {{--id="{{$category->id}}"--}}
+                                           {{--type="checkbox" onclick="getCheckCategories({{$category->id}})" checked></td>--}}
                                 <td>
                                     <div class="container">
                                         <div class="row">
-                                            {{--<form action="{{route('CategoryDestroy',[$category->id])}}" method="POST"--}}
-                                            {{--style="margin-right: 5px;">--}}
-                                            {{--@method('DELETE')--}}
-                                            {{--@csrf--}}
-                                            {{--<button class="btn btn-danger" type="submit">Delete</button>--}}
-                                            {{--</form>--}}
+                                            <form action="{{route('ProdСategoryPars',[$category->site_id])}}" method="GET"
+                                                  style="margin-right: 5px;">
+                                                @method('GET')
+                                                @csrf
+                                                <button class="btn btn-danger" type="submit">></button>
+                                            </form>
                                             <form action="{{route('CategoryInactive',[$category->id])}}" method="GET">
                                                 @method('GET')
                                                 @csrf
-                                                <button class="btn btn-danger" type="submit">Деактивировать</button>
+                                                <button class="btn btn-danger" type="submit">-</button>
                                             </form>
                                         </div>
                                     </div>

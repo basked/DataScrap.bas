@@ -145,9 +145,10 @@ class CategoryController extends Controller
 
 
     // обновляем кол-во по категорияи
-    public function CategoriesUpdate(){
+    public function CategoriesUpdate()
+    {
         Category::updateProductCnt();
-       return redirect('pars/categories')->with('message_parse', 'Категории обновлены');
+        return redirect('pars/categories')->with('message_parse', 'Категории обновлены');
 
     }
 
@@ -165,7 +166,7 @@ class CategoryController extends Controller
 
     public function test()
     {
-     //   dd(Category::find(1)->shop->name);
+        //   dd(Category::find(1)->shop->name);
 
         // тестирование регулярки
 //        $s='/catalog/1234-43--';
@@ -230,6 +231,7 @@ class CategoryController extends Controller
         });
         $mc->start();
         echo date("H:i:s");
+
     }
 
 

@@ -102,5 +102,16 @@ class ProductController extends Controller
         return redirect('pars/products');
     }
 
+    public function categoryPars($category_id)
+    {
+        Product::categoryPars($category_id);
+       return redirect('pars/categories');
+    }
+
+    public function categoriesPars()
+    {
+        Product::categoriesPars() ;
+        return redirect('pars/categories');
+    }
 
 }

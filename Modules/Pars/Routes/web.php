@@ -12,6 +12,7 @@
 */
 
 use Illuminate\Support\Facades\DB;
+use Modules\Pars\Entities\Category;
 
 Route::prefix('pars')->group(function () {
 //    Route::get('/', 'ParsController@index');
@@ -36,20 +37,23 @@ Route::prefix('pars')->group(function () {
     Route::post('/category', 'CategoryController@store')->name('CategoryStore');
     Route::delete('/category/{id}', 'CategoryController@destroy')->name('CategoryDestroy');
     // парсинг категорий
-    Route::get('categories/pars', 'CategoryController@parsCategories')->name('CategoriesParse');
+    Route::get('categories/pars', 'CategoryController@parsCategories')->name('CategoriesPars');
     Route::get('categories/updateProductsCnt', 'CategoryController@CategoriesUpdate')->name('CategoriesUpdate');;
 
     Route::get('/inactcategory/{id}', 'CategoryController@inactive')->name('CategoryInactive');
     Route::get('/actcategory/{id}', 'CategoryController@active')->name('CategoryActive');
     Route::get('/check_act_category/{ids}', 'CategoryController@activeCheck')->name('CategoryActiveCheck');
-    Route::get('/categories/test', function () {
+    Route::get('/categories/page', function () {
 
+      
     }
     );
 
     // Товары
     Route::get('/products', 'ProductController@index')->name('ProductIndex');
     Route::get('/products/pars', 'ProductController@productsPars')->name('ProductsPars');
+    Route::get('/products/category_pars/{id?}', 'ProductController@categoryPars')->name('ProdСategoryPars');
+    Route::get('/products/categories_pars', 'ProductController@categoriesPars')->name('ProdСategoriesPars');
     Route::get('/products/test', function () {
        $db= DB::connection('mysql_sam')->table('s_pars_main_5')->select()->get();
        dd($db);
