@@ -28,6 +28,14 @@ Route::prefix('pars')->group(function () {
     Route::delete('/shop/{id}', 'ShopController@destroy')->name('ShopDestroy');
     Route::get('/shops/test', 'ShopController@test')->name('ShopTest');
 
+    // Shop API
+    Route::get('/api/shops{patams?}','ApiShopController@index');
+    Route::post('/api/shops_insert','ApiShopController@store');
+    Route::put('/api/shops_update/{id}','ApiShopController@update');
+    Route::delete('/api/shops_delete/{id}','ApiShopController@destroy');
+
+
+
     Route::get('/categories', 'CategoryController@index')->name('CategoryIndex');
     Route::get('/categories_products', 'CategoryController@categoriesProducts')->name('CategoriesProducts');
 

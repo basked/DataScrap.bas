@@ -9,6 +9,36 @@ use Illuminate\Database\Eloquent\Model;
 use Symfony\Component\DomCrawler;
 use Symfony\Component\DomCrawler\Crawler;
 
+/**
+ * Modules\Pars\Entities\Category
+ *
+ * @property int $id
+ * @property int $shop_id
+ * @property string $name
+ * @property int $root_id
+ * @property int $site_id
+ * @property string $url
+ * @property int $active
+ * @property \Illuminate\Support\Carbon|null $created_at
+ * @property \Illuminate\Support\Carbon|null $updated_at
+ * @property int $products_cnt
+ * @property-read \Illuminate\Database\Eloquent\Collection|\Modules\Pars\Entities\Product[] $products
+ * @property-read \Modules\Pars\Entities\Shop $shop
+ * @method static \Illuminate\Database\Eloquent\Builder|\Modules\Pars\Entities\Category newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|\Modules\Pars\Entities\Category newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|\Modules\Pars\Entities\Category query()
+ * @method static \Illuminate\Database\Eloquent\Builder|\Modules\Pars\Entities\Category whereActive($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\Modules\Pars\Entities\Category whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\Modules\Pars\Entities\Category whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\Modules\Pars\Entities\Category whereName($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\Modules\Pars\Entities\Category whereProductsCnt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\Modules\Pars\Entities\Category whereRootId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\Modules\Pars\Entities\Category whereShopId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\Modules\Pars\Entities\Category whereSiteId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\Modules\Pars\Entities\Category whereUpdatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\Modules\Pars\Entities\Category whereUrl($value)
+ * @mixin \Eloquent
+ */
 class Category extends Model
 {
     protected $table = 'pars_categories';

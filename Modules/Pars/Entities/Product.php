@@ -6,6 +6,32 @@ use Curl\MultiCurl;
 use Illuminate\Database\Eloquent\Model;
 use Symfony\Component\DomCrawler\Crawler;
 
+/**
+ * Modules\Pars\Entities\Product
+ *
+ * @property int $id
+ * @property int $category_id
+ * @property string $product_id
+ * @property string $brand
+ * @property string $name
+ * @property float $price
+ * @property \Illuminate\Support\Carbon|null $created_at
+ * @property \Illuminate\Support\Carbon|null $updated_at
+ * @property-read \Illuminate\Database\Eloquent\Collection|\Modules\Pars\Entities\Action[] $actions
+ * @property-read \Modules\Pars\Entities\Category $category
+ * @method static \Illuminate\Database\Eloquent\Builder|\Modules\Pars\Entities\Product newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|\Modules\Pars\Entities\Product newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|\Modules\Pars\Entities\Product query()
+ * @method static \Illuminate\Database\Eloquent\Builder|\Modules\Pars\Entities\Product whereBrand($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\Modules\Pars\Entities\Product whereCategoryId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\Modules\Pars\Entities\Product whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\Modules\Pars\Entities\Product whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\Modules\Pars\Entities\Product whereName($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\Modules\Pars\Entities\Product wherePrice($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\Modules\Pars\Entities\Product whereProductId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\Modules\Pars\Entities\Product whereUpdatedAt($value)
+ * @mixin \Eloquent
+ */
 class Product extends Model
 {
     protected $fillable = [];

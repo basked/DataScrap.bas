@@ -16,7 +16,6 @@ class ShopController extends Controller
     public function index()
     {
         $shops = Shop::orderBy('created_at', 'asc')->get();
-
         return view('pars::shops.index', [
             'shops' => $shops
         ]);
@@ -27,7 +26,8 @@ class ShopController extends Controller
      * @return Response
      */
     public function create()
-    {   $shops = Shop::all();
+    {
+        $shops = Shop::all();
         return view('pars::shops.create', compact('shops'));
     }
 
@@ -97,10 +97,10 @@ class ShopController extends Controller
 
     public function test()
     {
-   $shops=Shop::find(1)->categories ;
-   foreach ($shops as $shop){
-       echo $shop->name;
-   }
+        $shops = Shop::find(1)->categories;
+        foreach ($shops as $shop) {
+            echo $shop->name;
+        }
 
     }
 
