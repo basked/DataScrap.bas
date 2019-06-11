@@ -53,8 +53,8 @@ class ApiShopController extends Controller
         $res['data'] = $data->get(['id', 'name', 'url', 'active', 'created_at']);
         $res['totalCount'] = $data->count();
 
-        // если есть параметр сортировки в запросе
-        if ($sort) {
+        // если есть параметр сортировки и нет группировки в запросе
+        if ($sort && !$group) {
             $res = [];
             $sort_column = $sort[0]->selector;
             $sort_operator = ($sort[0]->desc == true) ? 'asc' : 'desc';
@@ -63,7 +63,7 @@ class ApiShopController extends Controller
             $res['totalCount'] = $data->count();
 
         }
-        // если есть параметр групировки в запросе
+        // если есть параметр групировки о нет сортировки в запросе
         if ($group) {
             $res = [];
             $group_column = $group[0]->selector;
@@ -76,11 +76,32 @@ class ApiShopController extends Controller
                 $data_group[] = ['key' => $a[$group_column], 'items' => $shops, 'count' => 15, 'summary' => [1, 3]];
             }
             $res['data'] = $data_group;
-            $res['groupCount'] = $data->groupBy($group_column)->orderBy($group_column, $group_operator)->count();
-            $res['totalCount'] = 15;
-
-
+            $res['groupCount'] = 40;
+            $res['totalCount'] = 40;
         }
+
+//        // если есть параметр групировки и сортировки в запросе
+//        if ($group && $group) {
+//            $res = [];
+//            $group_column = $group[0]->selector;
+//            $group_operator = ($group[0]->desc == true) ? 'asc' : 'desc';
+//            $sort_column = $sort[0]->selector;
+//            $sort_operator = ($sort[0]->desc == true) ? 'asc' : 'desc';
+//            //  $data = $data;
+//            $keys = $data->groupBy($group_column)->orderBy($group_column, $group_operator)->get($group_column)->toArray();
+//            foreach ($keys as $key) {
+//                $a = (array)$key;
+//                $shops = Shop::where($group_column, '=', $a[$group_column])->orderBy($sort_column, $sort_operator)->get();
+//                $data_group[] = ['key' => $a[$group_column], 'items' => $shops, 'count' => 15, 'summary' => [1, 3]];
+//            }
+//            $res['data'] = $data_group;
+//            $res['groupCount'] = 40;
+//            $res['totalCount'] = 40;
+//        }
+
+
+
+
         return json_encode($res);
     }
 
