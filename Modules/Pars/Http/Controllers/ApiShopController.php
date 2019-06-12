@@ -63,8 +63,8 @@ class ApiShopController extends Controller
             $res['totalCount'] = $data->count();
 
         }
-        // если есть параметр групировки о нет сортировки в запросе
-        if ($group) {
+        // если есть параметр групировки но нет сортировки в запросе
+        if (!$sort && $group) {
             $res = [];
             $group_column = $group[0]->selector;
             $group_operator = ($group[0]->desc == true) ? 'asc' : 'desc';
@@ -73,13 +73,30 @@ class ApiShopController extends Controller
             foreach ($keys as $key) {
                 $a = (array)$key;
                 $shops = Shop::where($group_column, '=', $a[$group_column])->orderBy($group_column, $group_operator)->get();
-                $data_group[] = ['key' => $a[$group_column], 'items' => $shops, 'count' => 15, 'summary' => [1, 3]];
+                $data_group[] = ['key' => $a[$group_column], 'items' => $shops, 'count' => 2, 'summary' => [1, 3]];
             }
             $res['data'] = $data_group;
-            $res['groupCount'] = 40;
+            $res['groupCount'] = 20;
             $res['totalCount'] = 40;
         }
-
+        // если есть параметр групировки и сортировки в запросе
+        if ($sort && $group) {
+            $res = [];
+            $group_column = $group[0]->selector;
+            $group_operator = ($group[0]->desc == true) ? 'asc' : 'desc';
+            $sort_column = $sort[0]->selector;
+            $sort_operator = ($sort[0]->desc == true) ? 'asc' : 'desc';
+            //  $data = $data;
+            $keys = $data->groupBy($group_column)->orderBy($group_column, $group_operator)->get($group_column)->toArray();
+            foreach ($keys as $key) {
+                $a = (array)$key;
+                $shops = Shop::where($group_column, '=', $a[$group_column])->orderBy($sort_column, $sort_operator)->get();
+                $data_group[] = ['key' => $a[$group_column], 'items' => $shops, 'count' => 2, 'summary' => [1, 3]];
+            }
+            $res['data'] = $data_group;
+            $res['groupCount'] = 20;
+            $res['totalCount'] = 40;
+        }
 //        // если есть параметр групировки и сортировки в запросе
 //        if ($group && $group) {
 //            $res = [];
@@ -98,8 +115,6 @@ class ApiShopController extends Controller
 //            $res['groupCount'] = 40;
 //            $res['totalCount'] = 40;
 //        }
-
-
 
 
         return json_encode($res);
