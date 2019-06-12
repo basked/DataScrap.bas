@@ -28,26 +28,6 @@ class ApiShopController extends Controller
         $group = json_decode($request->group);
         $groupSummary = $request->groupSummary;
 
-
-        // для круппировки
-//        if (!is_null($group)) {
-//            if ($group[0]->selector) {
-//                $res = [];
-//                $desc = ($group[0]->desc == true) ? 'desc' : 'asc';
-//                //Выбранный для группировки столбец
-//                $column = $group[0]->selector;
-//                $keys = DB::table('pars_shops')->orderBy($column, $desc)->groupBy($column)->take($take)->skip($skip)->get($column)->toArray();
-//                foreach ($keys as $key) {
-//                    $a = (array)$key;
-//                    $shops = Shop::where($column, '=', $a[$column])->orderBy($column, $desc)->get();
-//                    $data[] = ['key' => $a[$column], 'items' => $shops, 'count' => 2, 'summary' => [1, 3]];
-//                }
-//                $res['data'] = $data;
-//                $res['totalCount'] = $shops->count();
-//                $res['groupCount'] = $shops->count();
-//                $res['summary'] = [20];
-//            }
-//        } else {
         // только при обычном отображении таблицы
         $data = Shop::take($take)->skip($skip);
         $res['data'] = $data->get(['id', 'name', 'url', 'active', 'created_at']);
@@ -58,7 +38,6 @@ class ApiShopController extends Controller
             $res = [];
             $sort_column = $sort[0]->selector;
             $sort_operator = ($sort[0]->desc == true) ? 'asc' : 'desc';
-            //    $data = $data->orderBy($sort_column, $sort_operator);
             $res['data'] = $data->orderBy($sort_column, $sort_operator)->get(['id', 'name', 'url', 'active', 'created_at']);
             $res['totalCount'] = $data->count();
 
@@ -97,26 +76,6 @@ class ApiShopController extends Controller
             $res['groupCount'] = 20;
             $res['totalCount'] = 40;
         }
-//        // если есть параметр групировки и сортировки в запросе
-//        if ($group && $group) {
-//            $res = [];
-//            $group_column = $group[0]->selector;
-//            $group_operator = ($group[0]->desc == true) ? 'asc' : 'desc';
-//            $sort_column = $sort[0]->selector;
-//            $sort_operator = ($sort[0]->desc == true) ? 'asc' : 'desc';
-//            //  $data = $data;
-//            $keys = $data->groupBy($group_column)->orderBy($group_column, $group_operator)->get($group_column)->toArray();
-//            foreach ($keys as $key) {
-//                $a = (array)$key;
-//                $shops = Shop::where($group_column, '=', $a[$group_column])->orderBy($sort_column, $sort_operator)->get();
-//                $data_group[] = ['key' => $a[$group_column], 'items' => $shops, 'count' => 15, 'summary' => [1, 3]];
-//            }
-//            $res['data'] = $data_group;
-//            $res['groupCount'] = 40;
-//            $res['totalCount'] = 40;
-//        }
-
-
         return json_encode($res);
     }
 
