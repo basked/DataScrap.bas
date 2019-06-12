@@ -6,24 +6,25 @@
                 :columns="columns"
                 :show-borders="true"
         >
-            <!--<dx-column-->
-            <!--:group-index="0"-->
-            <!--data-field="name"-->
-            <!--caption="Name"-->
-            <!--&gt;-->
-            <!--&lt;!&ndash;<dx-lookup&ndash;&gt;-->
-            <!--&lt;!&ndash;:data-source="priority"&ndash;&gt;-->
-            <!--&lt;!&ndash;value-expr="value"&ndash;&gt;-->
-            <!--&lt;!&ndash;display-expr="name"&ndash;&gt;-->
-            <!--&lt;!&ndash;/>&ndash;&gt;-->
-            <!--</dx-column>-->
+            <dx-column
+                    data-field="active"
+                    caption="Статус"
+                    data-type="boolean"
+            >
+                <dx-lookup
+                        :data-source="statuses"
+                        value-expr="id"
+                        display-expr="name"
+                />
+            </dx-column>
             <dx-editing
+
                     :select-text-on-edit-start="selectTextOnEditStart"
                     :start-edit-action="startEditAction"
-                    mode="batch"
                     :allow-updating="true"
                     :allow-adding="true"
-                    :allow-deleting="true"/>
+                    :allow-deleting="true"
+                    mode="batch"/>
 
             <dx-search-panel
                     :visible="true"
@@ -85,6 +86,7 @@
         DxScrolling,
         DxSearchPanel
     } from 'devextreme-vue/data-grid';
+    import {DxSwitch} from 'devextreme-vue/switch';
     import CustomStore from 'devextreme/data/custom_store';
     import 'whatwg-fetch';
 
@@ -93,9 +95,11 @@
             throw Error(response.statusText);
         return response;
     }
+
     function isNotEmpty(value) {
         return value !== undefined && value !== null && value !== "";
     }
+
     const gridDataSource = {
         store: new CustomStore({
             load: (loadOptions) => {
@@ -110,8 +114,8 @@
                     "totalSummary",
                     "group",
                     "groupSummary"
-                ].forEach(function(i) {
-                    if(i in loadOptions && isNotEmpty(loadOptions[i]))
+                ].forEach(function (i) {
+                    if (i in loadOptions && isNotEmpty(loadOptions[i]))
                         params += `${i}=${JSON.stringify(loadOptions[i])}&`;
                 });
                 console.log(params);
@@ -145,6 +149,7 @@
     };
     export default {
         components: {
+            DxSwitch,
             DxDataGrid,
             DxEditing,
             DxCheckBox,
@@ -160,17 +165,20 @@
         },
         data() {
             return {
-                columns: ['id','name', 'url', 'active'],
+
+                columns: ['id', 'name', 'url'],
+                statuses: [{
+                    'id': 1,
+                    'name': 'Активный'
+                }, {
+                    'id': 2,
+                    'name': 'Неактивный'
+                }],
                 dataSource: gridDataSource,
                 select: [
                     'id',
                     'name',
-                    'url',
-                    'active'],
-                // priority: [
-                //     {name: '5 элемент', value: 27},
-                //     {name: '21 век', value: 28}
-                // ],
+                    'url'],
                 keyExpr: 'id',
                 key: 'id',
                 remoteOperations: {
@@ -184,7 +192,6 @@
                 pageSizes: [3, 5, 10, 15],
                 selectTextOnEditStart: true,
                 startEditAction: 'click'
-
             };
         }
     };
