@@ -84,7 +84,7 @@ class Category extends Model
     static public function getParsData()
     {
         $curl = new Curl();
-        if (env('USE_PROXY')){
+        if (env('USE_PROXY')) {
             self::setProxy($curl);
         };
         $curl->get('https://5element.by/catalog');
@@ -119,7 +119,7 @@ class Category extends Model
             'filterInStore' => 0);
         $url = 'https://5element.by/ajax/catalog_category_list.php?SECTION_ID=' . $categoryId;
         $ch = curl_init();
-        if (env('USE_PROXY')){
+        if (env('USE_PROXY')) {
             curl_setopt($ch, CURLOPT_PROXYAUTH, true);
             curl_setopt($ch, CURLOPT_PROXY, '172.16.15.33');
             curl_setopt($ch, CURLOPT_PROXYPORT, 3128);
@@ -192,7 +192,7 @@ class Category extends Model
     {
         $url = 'https://5element.by/catalog';
         $ch = curl_init($url);
-        if (env('USE_PROXY')){
+        if (env('USE_PROXY')) {
 
             curl_setopt($ch, CURLOPT_PROXYAUTH, true);
             curl_setopt($ch, CURLOPT_PROXY, '172.16.15.33');
@@ -238,7 +238,6 @@ class Category extends Model
             'price' => $price
         ];
     }
-
 
     static public function parsProducts()
     {
@@ -288,8 +287,8 @@ class Category extends Model
         $url = 'https://5element.by/ajax/catalog_category_list.php?SECTION_ID=';
         $categories = Category::where('root_id', '>', 0)->get();
         $mc = new MultiCurl();
-        if (env('USE_PROXY')){
-         $mc->setProxy('172.16.15.33',3128,'gt-asup6','teksab');
+        if (env('USE_PROXY')) {
+            $mc->setProxy('172.16.15.33', 3128, 'gt-asup6', 'teksab');
         };
         $mc->setConcurrency(10);
         foreach ($categories as $category) {
