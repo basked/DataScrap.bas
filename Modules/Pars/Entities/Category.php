@@ -43,7 +43,8 @@ class Category extends Model
 {
     protected $table = 'pars_categories';
     protected $fillable = [];
-    protected $visible = ['name', 'url'];
+    protected $hidden =['site_id', 'root_id'];
+ //   protected $visible = ['*'];
 
 
     // саязь с продуктами

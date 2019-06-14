@@ -33,6 +33,7 @@ if (token) {
 
 //Vue.component('dev-grid', require('./components/DevGrid.vue').default);
 Vue.component('dev-grid-shops', require('./components/DevGridShops.vue').default);
+Vue.component('dev-grid-categories', require('./components/DevGridCategories.vue').default);
 
 
 /**

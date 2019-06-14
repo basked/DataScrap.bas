@@ -19,6 +19,22 @@ Route::prefix('pars')->group(function () {
 //   Route::get('/guzzle', 'ParsController@scrapGuzzle');
 //   Route::get('/curl', 'ParsController@scrapCurl');
 
+
+
+    // Shop API
+    Route::get('/api/shops{patams?}','ApiShopController@index');
+    Route::post('/api/shops_insert','ApiShopController@store');
+    Route::put('/api/shops_update/{id}','ApiShopController@update');
+    Route::delete('/api/shops_delete/{id}','ApiShopController@destroy');
+
+
+    // Category API
+    Route::get('/api/categories{patams?}','ApiCategoryController@index');
+    Route::post('/api/categories_insert','ApiCategoryController@store');
+    Route::put('/api/categories_update/{id}','ApiCategoryController@update');
+    Route::delete('/api/categories_delete/{id}','ApiCategoryController@destroy');
+
+
     Route::get('/', 'ParsController@index');
 
 
@@ -28,11 +44,6 @@ Route::prefix('pars')->group(function () {
     Route::delete('/shop/{id}', 'ShopController@destroy')->name('ShopDestroy');
     Route::get('/shops/test', 'ShopController@test')->name('ShopTest');
 
-    // Shop API
-    Route::get('/api/shops{patams?}','ApiShopController@index');
-    Route::post('/api/shops_insert','ApiShopController@store');
-    Route::put('/api/shops_update/{id}','ApiShopController@update');
-    Route::delete('/api/shops_delete/{id}','ApiShopController@destroy');
 
 
 

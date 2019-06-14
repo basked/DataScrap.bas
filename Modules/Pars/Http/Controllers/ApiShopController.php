@@ -118,54 +118,58 @@ class ApiShopController extends Controller
         $totalSummary = $request->totalSummary;
         $group = json_decode($request->group);
         $groupSummary = $request->groupSummary;
+
         // только при обычном отображении таблицы
-        $data = Shop::take($take)->skip($skip);
-        $res['data'] = $data->get(['id', 'name', 'url', 'active', 'created_at']);
-        $res['totalCount'] = $data->count();
+        if (!$sort && !$group) {
+            $data = Shop::take($take)->skip($skip);
+            $res['data'] = $data->get(['id', 'name', 'url', 'active', 'created_at']);
+            $res['totalCount'] = Shop::all()->count();
+        }
         // если есть параметр сортировки и нет группировки в запросе
         if ($sort && !$group) {
-            $res = [];
+            $data = Shop::take($take)->skip($skip);
             $sort_column = $sort[0]->selector;
             $sort_operator = ($sort[0]->desc == true) ? 'asc' : 'desc';
             $res['data'] = $data->orderBy($sort_column, $sort_operator)->get(['id', 'name', 'url', 'active', 'created_at']);
-            $res['totalCount'] = $data->count();
+            $res['totalCount'] = Shop::all()->count();
         }
         // если есть параметр групировки но нет сортировки в запросе
         if (!$sort && $group) {
-            $res = [];
+            $data_group=[] ;
+            $data = Shop::take($take)->skip($skip);
             $group_column = $group[0]->selector;
             $group_operator = ($group[0]->desc == true) ? 'asc' : 'desc';
-            //  $data = $data;
             $keys = $data->groupBy($group_column)->orderBy($group_column, $group_operator)->get($group_column)->toArray();
             foreach ($keys as $key) {
                 $a = (array)$key;
                 $shops = Shop::where($group_column, '=', $a[$group_column])->orderBy($group_column, $group_operator)->get();
-                $data_group[] = ['key' => $a[$group_column], 'items' => $shops, 'count' => 2, 'summary' => [1, 3]];
+                $data_group[] = ['key' => $a[$group_column], 'items' => $shops, 'count' => count($shops), 'summary' => [1, 3]];
             }
             $res['data'] = $data_group;
-            $res['groupCount'] = 20;
-            $res['totalCount'] = 40;
+            $res['groupCount'] = Shop::all()->groupBy($group_column)->count();
+            $res['totalCount'] = Shop::all()->count();
         }
         // если есть параметр групировки и сортировки в запросе
         if ($sort && $group) {
-            $res = [];
+            $data_group=[] ;
+            $data = Shop::take($take)->skip($skip);
             $group_column = $group[0]->selector;
             $group_operator = ($group[0]->desc == true) ? 'asc' : 'desc';
             $sort_column = $sort[0]->selector;
             $sort_operator = ($sort[0]->desc == true) ? 'asc' : 'desc';
-            //  $data = $data;
             $keys = $data->groupBy($group_column)->orderBy($group_column, $group_operator)->get($group_column)->toArray();
             foreach ($keys as $key) {
                 $a = (array)$key;
                 $shops = Shop::where($group_column, '=', $a[$group_column])->orderBy($sort_column, $sort_operator)->get();
-                $data_group[] = ['key' => $a[$group_column], 'items' => $shops, 'count' => 2, 'summary' => [1, 3]];
+                $data_group[] = ['key' => $a[$group_column], 'items' => $shops, 'count' => count($shops), 'summary' => [1, 3]];
             }
             $res['data'] = $data_group;
-            $res['groupCount'] = 20;
-            $res['totalCount'] = 40;
+            $res['groupCount'] = Shop::all()->groupBy($group_column)->count();
+            $res['totalCount'] = Shop::all()->count();
         }
         return json_encode($res);
     }
+
     /**
      * Show the form for creating a new resource.
      * @return Response

@@ -1,5 +1,5 @@
 <template>
-    <div id="data-grid-shops">
+    <div id="data-grid-categories">
         <dx-data-grid
                 :data-source="dataSource"
                 :remote-operations="remoteOperations"
@@ -62,7 +62,7 @@
 </template>
 <script>
     import 'devextreme/dist/css/dx.common.css';
-    import 'devextreme/dist/css/dx.material.teal.dark.compact.css';
+    import 'devextreme/dist/css/dx.material.orange.light.css';
     import {DxCheckBox, DxSelectBox} from 'devextreme-vue';
     import {
         DxDataGrid,
@@ -110,7 +110,7 @@
                 });
                 console.log(params);
                 params = params.slice(0, -1);
-                return fetch(`api/shops${params}`)
+                return fetch(`api/categories${params}`)
                     .then(handleErrors)
                     .then(response => response.json())
                     .then((result) => {
@@ -124,16 +124,16 @@
                     });
             },
             insert: (values) => {
-                return axios.post(`api/shops_insert`, values);//.then(handleErrors);
+                return axios.post(`api/categories_insert`, values);//.then(handleErrors);
             },
 
             remove: (key) => {
-                return axios.delete(`api/shops_delete/` + encodeURIComponent(key.id), {
+                return axios.delete(`api/categories_delete/` + encodeURIComponent(key.id), {
                     method: "DELETE"
                 });//.then(handleErrors);
             },
             update: (key, values) => {
-                return axios.put(`api/shops_update/` + encodeURIComponent(key.id), values);//.then(handleErrors);
+                return axios.put(`api/categories_update/` + encodeURIComponent(key.id), values);//.then(handleErrors);
             }
         })
     };
@@ -187,7 +187,7 @@
     };
 </script>
 <style>
-    #data-grid-shops {
+    #data-grid-categories {
         min-height: 700px;
     }
 
