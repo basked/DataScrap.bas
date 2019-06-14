@@ -62,9 +62,12 @@ Route::prefix('pars')->group(function () {
     Route::get('/products/pars', 'ProductController@productsPars')->name('ProductsPars');
     Route::get('/products/category_pars/{id?}', 'ProductController@categoryPars')->name('ProdСategoryPars');
     Route::get('/products/categories_pars', 'ProductController@categoriesPars')->name('ProdСategoriesPars');
+    Route::get('/products/categories_null_pars', 'ProductController@categoriesNullPars')->name('ProdСategoriesNullPars');
+    Route::get('/products/products_import_to_sam', 'ProductController@productsImportToSam')->name('ProdImportToSam');
+
     Route::get('/products/test', function () {
-       $db= DB::connection('mysql_sam')->table('s_pars_main_5')->select()->get();
-       dd($db);
+//       $db= DB::connection('mysql_sam')->table('s_pars_main_5')->select()->get();
+//       dd($db);
 
     });
 

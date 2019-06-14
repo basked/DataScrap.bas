@@ -5,6 +5,8 @@ namespace Modules\Pars\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Routing\Controller;
+use Illuminate\Support\Facades\DB;
+use Modules\Pars\Entities\Action;
 use Modules\Pars\Entities\Category;
 use Modules\Pars\Entities\Product;
 
@@ -18,12 +20,12 @@ class ProductController extends Controller
      */
     public function index()
     {
-       // $categories=Category::where('active',1)->get();
+        // $categories=Category::where('active',1)->get();
 
-        $categories= Category::with('products')->where('active','1')->orderBy('name')->get();
+        $categories = Category::with('products')->where('active', '1')->orderBy('name')->get();
 
 //        dd($categories products);
-     //   $products =$categories[6]->products()->get();
+        //   $products =$categories[6]->products()->get();
 
 
         return view('pars::products.index', [
@@ -105,13 +107,29 @@ class ProductController extends Controller
     public function categoryPars($category_id)
     {
         Product::categoryPars($category_id);
-       return redirect('pars/categories');
+        return redirect('pars/categories');
     }
 
     public function categoriesPars()
     {
-        Product::categoriesPars() ;
+        Product::truncate();
+        Action::truncate();
+        DB::table('pars_action_product')->truncate();
+       // Category::updateProductCnt();
+        Product::categoriesPars();
         return redirect('pars/categories');
+    }
+
+    public function categoriesNullPars()
+    {
+        Product::categoriesNullPars();
+        return redirect('pars/categories');
+    }
+
+    public function productsImportToSam()
+    {
+        Product::productsImportToSam();
+        //return redirect('pars/categories');
     }
 
 }

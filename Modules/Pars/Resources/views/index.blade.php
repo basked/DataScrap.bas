@@ -5,31 +5,38 @@
         <div class="card">
             <img class="card-img-top" src="..." alt="Card image cap">
             <div class="card-body">
-                <h5 class="card-title">Card title</h5>
-                <p class="card-text">This is a wider card with supporting text below as a natural lead-in to additional content. This content is a little bit longer.</p>
+                <h5 class="card-title">Категории</h5>
+                <p class="card-text">
+                   Кол-во активных категорий:
+                   Кол-во неактивных категорий:
+                </p>
             </div>
             <div class="card-footer">
-                <small class="text-muted">Last updated 3 mins ago</small>
+                <small class="text-muted">Последнее обновление...</small>
             </div>
         </div>
         <div class="card">
             <img class="card-img-top" src="..." alt="Card image cap">
             <div class="card-body">
-                <h5 class="card-title">Card title</h5>
-                <p class="card-text">This card has supporting text below as a natural lead-in to additional content.</p>
+                <h5 class="card-title">Товары</h5>
+                <p class="card-text">
+                   Кол-во товаров:
+                </p>
             </div>
             <div class="card-footer">
-                <small class="text-muted">Last updated 3 mins ago</small>
+                <small class="text-muted">Последнее обновление...</small>
             </div>
         </div>
         <div class="card">
             <img class="card-img-top" src="..." alt="Card image cap">
-            <div class="card-body">
-                <h5 class="card-title">Card title</h5>
-                <p class="card-text">This is a wider card with supporting text below as a natural lead-in to additional content. This card has even longer content than the first to show that equal height action.</p>
+            <div class="card-body alert-danger">
+                <h5 class="card-title">Акции</h5>
+                <p class="card-text">
+                    Кол-во акций:
+                </p>
             </div>
             <div class="card-footer">
-                <small class="text-muted">Last updated 3 mins ago</small>
+                <small class="text-muted">Последнее обновление...</small>
             </div>
         </div>
     </div>

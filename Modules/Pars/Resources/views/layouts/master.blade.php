@@ -34,7 +34,7 @@
     </nav>
 
     @yield('content')
-    {{--<script src="{{ asset('modules/pars/js/app.js') }}" defer></script>--}}
+    <script src="{{ asset('modules/pars/js/pars_app.js') }}" defer></script>
     {{-- Laravel Mix - JS File --}}
          <script src="{{ mix('js/pars.js') }}"></script>
     </body>

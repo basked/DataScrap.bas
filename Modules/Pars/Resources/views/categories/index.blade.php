@@ -14,10 +14,20 @@
                     @csrf
                     <button class="btn btn-success" type="submit">Обновить кол-во</button>
                 </form>
-                <form  action="{{route('ProdСategoriesPars')}}" method="GET" style="margin: 6px;">
+                <form action="{{route('ProdСategoriesPars')}}" method="GET" style="margin: 6px;">
                     @method('GET')
                     @csrf
                     <button class="btn btn-success" type="submit">Обновить товары</button>
+                </form>
+                <form action="{{route('ProdСategoriesNullPars')}}" method="GET" style="margin: 6px;">
+                    @method('GET')
+                    @csrf
+                    <button class="btn btn-success" type="submit">Повторно обновить товары</button>
+                </form>
+                <form action="{{route('ProdImportToSam')}}" method="GET" style="margin: 6px;">
+                    @method('GET')
+                    @csrf
+                    <button class="btn btn-success" type="submit">Импорт</button>
                 </form>
 
             </div>
@@ -100,12 +110,13 @@
                                         из {{ $category->products_cnt }})</a></td>
                                 {{--<td>{{ $category->url }}</td>--}}
                                 {{--<td><input @if ($category->active) checked @endif class="check-data"--}}
-                                           {{--id="{{$category->id}}"--}}
-                                           {{--type="checkbox" onclick="getCheckCategories({{$category->id}})" checked></td>--}}
+                                {{--id="{{$category->id}}"--}}
+                                {{--type="checkbox" onclick="getCheckCategories({{$category->id}})" checked></td>--}}
                                 <td>
                                     <div class="container">
                                         <div class="row">
-                                            <form action="{{route('ProdСategoryPars',[$category->site_id])}}" method="GET"
+                                            <form action="{{route('ProdСategoryPars',[$category->site_id])}}"
+                                                  method="GET"
                                                   style="margin-right: 5px;">
                                                 @method('GET')
                                                 @csrf

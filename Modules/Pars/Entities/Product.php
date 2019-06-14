@@ -4,6 +4,7 @@ namespace Modules\Pars\Entities;
 
 use Curl\MultiCurl;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\DB;
 use Symfony\Component\DomCrawler\Crawler;
 
 /**
@@ -170,13 +171,17 @@ class Product extends Model
             echo date("H:i:s");
         });
     }
+
     // парсим конкрутную категорию
     static public function categoryPars($site_id)
     {
-     //   Product::truncate();
+        //   Product::truncate();
         if (Category::where('site_id', '=', $site_id)->where('active', '=', true)->exists()) {
             $base_url = 'https://5element.by/ajax/catalog_category_list.php?SECTION_ID=';
             $mc = new MultiCurl();
+            if (env('USE_PROXY')){
+                $mc->setProxy('172.16.15.33',3128,'gt-asup6','teksab');
+            };
             $mc->setTimeout(1200);
             $mc->setConcurrency(20);
             $categories = Category::where('site_id', '=', $site_id)->where('active', '=', true)->where('products_cnt', '>', 0)->get();
@@ -252,11 +257,51 @@ class Product extends Model
     }
 
     // парсим все активные категории
-    static public function categoriesPars(){
+    static public function categoriesPars()
+    {
         ini_set('max_execution_time', 1200);
-        $categories=Category::where('active','=',true)->where('products_cnt','>',0)->get();
-        foreach ($categories as $category){
+        $categories = Category::where('active', '=', true)->where('products_cnt', '>', 0)->get();
+        foreach ($categories as $category) {
             self::categoryPars($category->site_id);
         }
     }
+
+    // парсим все  категории, которые не спарсились
+    static public function categoriesNullPars()
+    {
+        ini_set('max_execution_time', 1200);
+        $categories = DB::select('SELECT
+                                        c.root_id, c.site_id, c.products_cnt
+                                    FROM
+                                        pars_categories c left join
+                                            (
+                                                SELECT
+                                            category_id,
+                                            COUNT(category_id) products_cnt
+                                        FROM
+                                           pars_products  
+                                                    
+                                            GROUP BY category_id ) p
+                                    ON c.root_id=p.category_id
+                                    where c.active=1 and c.products_cnt>0  and c.products_cnt>ifnull(p.products_cnt,0)
+                                    order by products_cnt desc  ');
+        foreach ($categories as $category) {
+            self::categoryPars($category->site_id);
+        }
+    }
+
+    // импорт продуктов в SAM DB
+    static public function productsImportToSam()
+    {
+        //запись о новой вставке
+        DB::connection('mysql_sam')->table('s_pars_main_5')->insert(['act' => 1, 'date' => now(), 'date_end' => now(),'thread'=>0]);
+        $max_main_id = DB::connection('mysql_sam')->table('s_pars_main_5')->max('id');
+        // добавляем продукты которых нет SAM
+        DB::connection('mysql_sam')->insert('insert into user1111058_sam.s_pars_product_5(category_id,prodId,name,cod) SELECT distinct category_id,prodId,name,cod FROM user1111058_oc_db.s_pars_product_5 WHERE prodid NOT IN (SELECT DISTINCT prodid FROM user1111058_sam.s_pars_product_5)');
+        // добавляем акции которых нет SAM
+        DB::connection('mysql_sam')->insert('insert into user1111058_sam.s_pars_oplata_5(creditId,name) SELECT distinct careditId,name FROM user1111058_oc_db.s_pars_oplata_5 WHERE careditId NOT IN (SELECT DISTINCT creditId FROM user1111058_sam.s_pars_oplata_5)');
+        // добавляем цены
+        DB::connection('mysql_sam')->insert('insert into user1111058_sam.s_pars_cena_5(product_id,cena,oplata_id,main_id) SELECT DISTINCT p.id, oc_db.price, o.id,'.$max_main_id.' FROM user1111058_sam.s_pars_product_5 p, user1111058_sam.s_pars_oplata_5 o, (SELECT DISTINCT a.action_id AS act_action_id, p.product_id AS prod_product_id, p.price FROM user1111058_oc_db.pars_actions a, user1111058_oc_db.pars_products p, user1111058_oc_db.pars_action_product ap WHERE a.id = ap.action_id AND p.id = ap.product_id ORDER BY 2,1) oc_db WHERE p.prodId = oc_db.prod_product_id AND o.creditId = oc_db.act_action_id');
+    }
+
 }

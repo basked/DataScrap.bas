@@ -69,16 +69,24 @@ class Category extends Model
             'sortDest' => 'desc',
             'filterInStock' => 1,
             'filterInStore' => 0,
-     //       'fastFilterId' =>  1315,
-'updateUrl'=> true
-            
-            ];
+            //       'fastFilterId' =>  1315,
+            'updateUrl' => true
+
+        ];
+    }
+
+    static public function setProxy(Curl $curl)
+    {
+        $curl->setProxy('172.16.15.33', '3128', 'gt-asup6', 'teksab');
     }
 
     // Парсим первый раз только ид категорий на сайте
     static public function getParsData()
     {
         $curl = new Curl();
+        if (env('USE_PROXY')){
+            self::setProxy($curl);
+        };
         $curl->get('https://5element.by/catalog');
         if ($curl->error) {
             echo 'Ошибка при парсинге в функции parsFirsLoop: ' . $curl->errorCode . ': ' . $curl->errorMessage . "\n";
@@ -100,6 +108,7 @@ class Category extends Model
 
     static public function getParsCategory($categoryId)
     {
+        ini_set('max_execution_time', 720);
         $postData = array('categoryId' => (int)$categoryId,
             'currentPage' => 1,
             'itemsPerPage' => 10,
@@ -110,6 +119,13 @@ class Category extends Model
             'filterInStore' => 0);
         $url = 'https://5element.by/ajax/catalog_category_list.php?SECTION_ID=' . $categoryId;
         $ch = curl_init();
+        if (env('USE_PROXY')){
+            curl_setopt($ch, CURLOPT_PROXYAUTH, true);
+            curl_setopt($ch, CURLOPT_PROXY, '172.16.15.33');
+            curl_setopt($ch, CURLOPT_PROXYPORT, 3128);
+            curl_setopt($ch, CURLOPT_PROXYUSERNAME, 'gt-asup6');
+            curl_setopt($ch, CURLOPT_PROXYUSERPWD, 'teksab');
+        };
         curl_setopt($ch, CURLOPT_URL, $url);
         curl_setopt($ch, CURLOPT_POST, 1);
         curl_setopt($ch, CURLOPT_POSTFIELDS, $postData);
@@ -176,6 +192,15 @@ class Category extends Model
     {
         $url = 'https://5element.by/catalog';
         $ch = curl_init($url);
+        if (env('USE_PROXY')){
+
+            curl_setopt($ch, CURLOPT_PROXYAUTH, true);
+            curl_setopt($ch, CURLOPT_PROXY, '172.16.15.33');
+            curl_setopt($ch, CURLOPT_PROXYPORT, 3128);
+            curl_setopt($ch, CURLOPT_PROXYUSERNAME, 'gt-asup6');
+            curl_setopt($ch, CURLOPT_PROXYUSERPWD, 'teksab');
+        };
+
         curl_setopt($ch, CURLOPT_URL, $url);
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true); // возвращает результат в переменную а не в буфер
         curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true); //использовать редиректы
@@ -246,7 +271,7 @@ class Category extends Model
     static public function inactiveCategory($id)
     {
         $category = Category::find($id);
-        Product::where('category_id',$category->root_id)->delete();
+        Product::where('category_id', $category->root_id)->delete();
         $category->active = 0;
         $category->save();
     }
@@ -263,17 +288,20 @@ class Category extends Model
         $url = 'https://5element.by/ajax/catalog_category_list.php?SECTION_ID=';
         $categories = Category::where('root_id', '>', 0)->get();
         $mc = new MultiCurl();
+        if (env('USE_PROXY')){
+         $mc->setProxy('172.16.15.33',3128,'gt-asup6','teksab');
+        };
         $mc->setConcurrency(10);
         foreach ($categories as $category) {
-            $mc->addPost($url.$category->site_id , self::setPostData($category->root_id, 1, 10));
+            $mc->addPost($url . $category->site_id, self::setPostData($category->root_id, 1, 10));
         }
         $mc->success(function ($instance) {
-            try{
-            $site_id=$instance->response->updateSection->section->ID;
-            $category=Category::where('site_id','=',$site_id)->first() ;
-            $category->products_cnt=$instance->response->count;
-            $category->save();
-            }catch (Exception $e){
+            try {
+                $site_id = $instance->response->updateSection->section->ID;
+                $category = Category::where('site_id', '=', $site_id)->first();
+                $category->products_cnt = $instance->response->count;
+                $category->save();
+            } catch (Exception $e) {
                 echo $e->getMessage();
             }
 
@@ -294,7 +322,6 @@ class Category extends Model
 
 
     }
-
 
 
 }
