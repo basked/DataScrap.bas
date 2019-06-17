@@ -119,23 +119,86 @@ class ApiShopController extends Controller
         $group = json_decode($request->group);
         $groupSummary = $request->groupSummary;
 
-        // только при обычном отображении таблицы
-        if (!$sort && !$group) {
+        dd($request->request);
+
+        //1) только при обычном отображении таблицы
+        if (!$sort && !$group && !$filters) {
             $data = Shop::take($take)->skip($skip);
             $res['data'] = $data->get(['id', 'name', 'url', 'active', 'created_at']);
             $res['totalCount'] = Shop::all()->count();
         }
-        // если есть параметр сортировки и нет группировки в запросе
-        if ($sort && !$group) {
+
+        //2) только поиск
+        if (!$sort && !$group && $filters) {
+            $data = Shop::take($take)->skip($skip);
+            foreach ($filters as $key => $filter) {
+                if (($key + 1) % 2 != 0) {
+                    if ($filter[1] == 'contains') {
+                        $data = $data->orWhere($filter[0], 'like', '%' . $filter[2] . '%');
+                    } else {
+                        $data = $data->orWhere($filter[0], $filter[1], $filter[2]);
+                    }
+                }
+            };
+            $res['data'] = $data->get(['id', 'name', 'url', 'active', 'created_at']);
+            $res['totalCount'] = $data->count();
+        }
+
+
+        //3) если есть параметр сортировки и нет группировки и фильтра в запросе
+        if ($sort && !$group && !$filters) {
             $data = Shop::take($take)->skip($skip);
             $sort_column = $sort[0]->selector;
             $sort_operator = ($sort[0]->desc == true) ? 'asc' : 'desc';
+
+            $res['data'] = $data->orderBy($sort_column, $sort_operator)->get(['id', 'name', 'url', 'active', 'created_at']);
+            $res['totalCount'] = $data->count();
+        }
+
+
+        //4) если есть параметр сортировки и фильтрации нет группировки в запросе
+        if ($sort && !$group && $filters) {
+            $data = Shop::take($take)->skip($skip);
+            $sort_column = $sort[0]->selector;
+            $sort_operator = ($sort[0]->desc == true) ? 'asc' : 'desc';
+            foreach ($filters as $key => $filter) {
+                if (($key + 1) % 2 != 0) {
+                    if ($filter[1] == 'contains') {
+                        $data = $data->orWhere($filter[0], 'like', '%' . $filter[2] . '%');
+                    } else {
+                        $data = $data->orWhere($filter[0], $filter[1], $filter[2]);
+                    }
+                }
+            };
             $res['data'] = $data->orderBy($sort_column, $sort_operator)->get(['id', 'name', 'url', 'active', 'created_at']);
             $res['totalCount'] = Shop::all()->count();
         }
-        // если есть параметр групировки но нет сортировки в запросе
-        if (!$sort && $group) {
-            $data_group=[] ;
+
+
+        //5)!!! если есть параметр групировки и сортировки в запросе
+        if ($sort && $group && !$filters) {
+            $data_group = [];
+            $data = Shop::take($take)->skip($skip);
+            $group_column = $group[0]->selector;
+            $group_operator = ($group[0]->desc == true) ? 'asc' : 'desc';
+            $sort_column = $sort[0]->selector;
+            $sort_operator = ($sort[0]->desc == true) ? 'asc' : 'desc';
+            $keys = $data->groupBy($group_column)->orderBy($group_column, $group_operator)->get($group_column)->toArray();
+            foreach ($keys as $key) {
+                $a = (array)$key;
+                $shops = Shop::where($group_column, '=', $a[$group_column])->orderBy($sort_column, $sort_operator)->get();
+                $data_group[] = ['key' => $a[$group_column], 'items' => $shops, 'count' => count($shops), 'summary' => [1, 3]];
+            }
+            $res['data'] = $data_group;
+            $res['groupCount'] = Shop::all()->groupBy($group_column)->count();
+            $res['totalCount'] = Shop::all()->count();
+        }
+
+
+
+        //6) если есть параметр групировки но нет сортировки и фильтра в запросе
+        if (!$sort && $group && !$filters) {
+            $data_group = [];
             $data = Shop::take($take)->skip($skip);
             $group_column = $group[0]->selector;
             $group_operator = ($group[0]->desc == true) ? 'asc' : 'desc';
@@ -149,9 +212,11 @@ class ApiShopController extends Controller
             $res['groupCount'] = Shop::all()->groupBy($group_column)->count();
             $res['totalCount'] = Shop::all()->count();
         }
-        // если есть параметр групировки и сортировки в запросе
+
+
+        //7) если есть параметр групировки и сортировки в запросе
         if ($sort && $group) {
-            $data_group=[] ;
+            $data_group = [];
             $data = Shop::take($take)->skip($skip);
             $group_column = $group[0]->selector;
             $group_operator = ($group[0]->desc == true) ? 'asc' : 'desc';
