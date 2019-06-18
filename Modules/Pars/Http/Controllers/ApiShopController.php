@@ -119,7 +119,6 @@ class ApiShopController extends Controller
         $group = json_decode($request->group);
         $groupSummary = $request->groupSummary;
 
-        dd($request->request);
 
         //1) только при обычном отображении таблицы
         if (!$sort && !$group && !$filters) {
@@ -130,14 +129,32 @@ class ApiShopController extends Controller
 
         //2) только поиск
         if (!$sort && !$group && $filters) {
+
             $data = Shop::take($take)->skip($skip);
-            foreach ($filters as $key => $filter) {
-                if (($key + 1) % 2 != 0) {
-                    if ($filter[1] == 'contains') {
-                        $data = $data->orWhere($filter[0], 'like', '%' . $filter[2] . '%');
-                    } else {
-                        $data = $data->orWhere($filter[0], $filter[1], $filter[2]);
+
+          $ar=json_encode($filters);
+          $ar=str_replace('contains','like',$ar,  $cnt);
+
+          dd($ar);
+
+          // dd($s);
+
+            // если первый элемент массив значит это массив масива иначе одномерный массив
+            if (is_array($filters[0])) {
+                foreach ($filters as $key => $filter) {
+                    if (($key + 1) % 2 != 0) {
+                        if ($filter[1] == 'contains') {
+                            $data = $data->orWhere($filter[0], 'like', '%' . $filter[2] . '%');
+                        } else {
+                            $data = $data->orWhere($filter[0], $filter[1], $filter[2]);
+                        }
                     }
+                }
+            } else {
+                if ($filters[1] == 'contains') {
+                    $data = $data->orWhere($filters[0], 'like', '%' . $filters[2] . '%');
+                } else {
+                    $data = $data->orWhere($filters[0], $filters[1], $filters[2]);
                 }
             };
             $res['data'] = $data->get(['id', 'name', 'url', 'active', 'created_at']);
@@ -175,25 +192,23 @@ class ApiShopController extends Controller
         }
 
 
-        //5)!!! если есть параметр групировки и сортировки в запросе
-        if ($sort && $group && !$filters) {
+        //5)!!! если есть параметр групировки и сортировки нет фильтрации в запросе
+        if (!$sort && $group && $filters) {
+            // dd($request->request);
             $data_group = [];
             $data = Shop::take($take)->skip($skip);
             $group_column = $group[0]->selector;
             $group_operator = ($group[0]->desc == true) ? 'asc' : 'desc';
-            $sort_column = $sort[0]->selector;
-            $sort_operator = ($sort[0]->desc == true) ? 'asc' : 'desc';
-            $keys = $data->groupBy($group_column)->orderBy($group_column, $group_operator)->get($group_column)->toArray();
+            $keys = $data->groupBy($group_column)->get($group_column)->toArray();
             foreach ($keys as $key) {
                 $a = (array)$key;
-                $shops = Shop::where($group_column, '=', $a[$group_column])->orderBy($sort_column, $sort_operator)->get();
+                $shops = Shop::where($group_column, '=', $a[$group_column])->get();
                 $data_group[] = ['key' => $a[$group_column], 'items' => $shops, 'count' => count($shops), 'summary' => [1, 3]];
             }
             $res['data'] = $data_group;
             $res['groupCount'] = Shop::all()->groupBy($group_column)->count();
             $res['totalCount'] = Shop::all()->count();
         }
-
 
 
         //6) если есть параметр групировки но нет сортировки и фильтра в запросе
@@ -215,7 +230,7 @@ class ApiShopController extends Controller
 
 
         //7) если есть параметр групировки и сортировки в запросе
-        if ($sort && $group) {
+        if ($sort && $group && !$filters) {
             $data_group = [];
             $data = Shop::take($take)->skip($skip);
             $group_column = $group[0]->selector;
@@ -232,6 +247,8 @@ class ApiShopController extends Controller
             $res['groupCount'] = Shop::all()->groupBy($group_column)->count();
             $res['totalCount'] = Shop::all()->count();
         }
+
+
         return json_encode($res);
     }
 
