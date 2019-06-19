@@ -30,6 +30,8 @@
                     :visible="true"
                     :highlight-case-sensitive="true"
             />
+            <dx-filter-row :visible="true"/>
+            <dx-header-filter :visible="true"/>
             <dx-group-panel :visible="true"/>
             <dx-grouping :auto-expand-all="false"
                          :context-menu-enabled="true"
@@ -74,7 +76,9 @@
         DxGroupPanel,
         DxGrouping,
         DxScrolling,
-        DxSearchPanel
+        DxSearchPanel,
+        DxFilterRow,
+        DxHeaderFilter
     } from 'devextreme-vue/data-grid';
     import {DxSwitch} from 'devextreme-vue/switch';
     import CustomStore from 'devextreme/data/custom_store';
@@ -151,7 +155,9 @@
             DxPaging,
             DxPager,
             DxColumn,
-            DxSearchPanel
+            DxSearchPanel,
+            DxFilterRow,
+            DxHeaderFilter
         },
         data() {
             return {

@@ -46,23 +46,27 @@ class ApiShopController extends Controller
         $patterns[3] = '/,"=",null]/';
         $patterns[4] = '/,"<","(.*s*.*)"]/u';
         $patterns[5] = '/,">","(.*s*.*)"]/u';
-        $patterns[6] = '/,"=","(.*s*.*)"]/u';
-        $patterns[7] = '/,"=",(\d*)/';
-        $patterns[8] = '/\[/';
-        $patterns[9] = '/\]/';
-        $patterns[10] = '/\"/';
+        $patterns[6] = '/,"=","(\w*)"]/u';
+        $patterns[7] = '/,"=","(.*s*.*)"]/u';
+
+        $patterns[8] = '/,"=",(\d*)/';
+        $patterns[9] = '/\[/';
+        $patterns[10] = '/\]/';
+        $patterns[11] = '/\"/';
 
 
         $replacements = array();
 
 
-        $replacements[10] = ' like \'%$1%\')';
-        $replacements[9] = ' or ';
-        $replacements[8] = ' and ';
-        $replacements[7] = ' is null)';
-        $replacements[6] = ' < \'$1\')';
-        $replacements[5] = ' > \'$1\')';
+        $replacements[11] = ' like \'%$1%\')';
+        $replacements[10] = ' or ';
+        $replacements[9] = ' and ';
+        $replacements[8] = ' is null)';
+        $replacements[7] = ' < \'$1\')';
+        $replacements[6] = ' > \'$1\')';
+        $replacements[5] = ' = \'$1\')';
         $replacements[4] = ' = \'$1\')';
+
         $replacements[3] = ' = $1';
         $replacements[2] = '(';
         $replacements[1] = ')';
@@ -76,9 +80,9 @@ class ApiShopController extends Controller
 
     public function index(Request $request)
     {
-        
-        $model=Shop::class;
-        $fields=['id', 'name', 'url', 'active', 'created_at'];
+
+        $model = Shop::class;
+        $fields = ['id', 'name', 'url', 'active', 'created_at'];
 
         $res = [];
         $skip = $request->skip;
@@ -101,21 +105,21 @@ class ApiShopController extends Controller
         //2) только поиск
         if (!$sort && !$group && $filters) {
             $data = $data->whereRaw($this->JsonToSQL(json_encode($filters)));
-            if (json_encode($data) != []) {
-                $res['data'] = $data->get($fields);
-                $res['totalCount'] = $data->count();
-            }
+            $res['data'] = $data->get($fields);
+            $res['totalCount'] = $data->count();
         }
 
         //3) если есть параметр групировки но нет сортировки и фильтра в запросе
         if (!$sort && $group && !$filters) {
             $data_group = [];
             $group_column = $group[0]->selector;
-            $group_operator = ($group[0]->desc == true) ? 'asc' : 'desc';
-            $keys = $data->groupBy($group_column)->orderBy($group_column, $group_operator)->get($group_column)->toArray();
+            //   $group_operator = ($group[0]->desc == true) ? 'asc' : 'desc';
+            $keys = $data->groupBy($group_column)/*->orderBy($group_column, $group_operator)*/
+            ->get($group_column)->toArray();
             foreach ($keys as $key) {
                 $a = (array)$key;
-                $shops = $model::where($group_column, '=', $a[$group_column])->orderBy($group_column, $group_operator)->get();
+                $shops = $model::where($group_column, '=', $a[$group_column])/*->orderBy($group_column, $group_operator)*/
+                ->get();
                 $data_group[] = ['key' => $a[$group_column], 'items' => $shops, 'count' => count($shops), 'summary' => [1, 3]];
             }
             $res['data'] = $data_group;
@@ -155,7 +159,7 @@ class ApiShopController extends Controller
             $sort_operator = ($sort[0]->desc == true) ? 'asc' : 'desc';
             $data = $data->whereRaw($this->JsonToSQL(json_encode($filters)));
             $res['data'] = $data->orderBy($sort_column, $sort_operator)->get($fields);
-            $res['totalCount'] =$model::all()->count();
+            $res['totalCount'] = $model::all()->count();
         }
 
 
@@ -174,7 +178,7 @@ class ApiShopController extends Controller
             }
             $res['data'] = $data_group;
             $res['groupCount'] = $model::all()->groupBy($group_column)->count();
-            $res['totalCount'] =$model::all()->count();
+            $res['totalCount'] = $model::all()->count();
         }
 
 
@@ -193,7 +197,7 @@ class ApiShopController extends Controller
                 $data_group[] = ['key' => $a[$group_column], 'items' => $shops, 'count' => count($shops), 'summary' => [1, 3]];
             }
             $res['data'] = $data_group;
-            $res['groupCount'] =$model::all()->groupBy($group_column)->count();
+            $res['groupCount'] = $model::all()->groupBy($group_column)->count();
             $res['totalCount'] = $model::all()->count();
         }
         return json_encode($res);
