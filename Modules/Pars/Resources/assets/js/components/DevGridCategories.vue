@@ -39,7 +39,7 @@
                     :allowed-page-sizes="pageSizes"
                     :show-page-size-selector="true"
             />
-            <dx-paging :page-size="5"/>
+            <dx-paging :page-size="10"/>
         </dx-data-grid>
         <div class="options">
             <div class="caption">Options</div>
@@ -161,7 +161,7 @@
                     'id': 1,
                     'name': 'Активный'
                 }, {
-                    'id': 2,
+                    'id': 0,
                     'name': 'Неактивный'
                 }],
                 dataSource: gridDataSource,
@@ -179,7 +179,7 @@
                     grouping: true,
                     groupPaging: true,
                 },
-                pageSizes: [5, 10, 15],
+                pageSizes: [10, 25, 50],
                 selectTextOnEditStart: true,
                 startEditAction: 'click'
             };
