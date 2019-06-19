@@ -113,12 +113,19 @@ class ApiShopController extends Controller
         if (!$sort && $group && !$filters) {
             $data_group = [];
             $group_column = $group[0]->selector;
-            //   $group_operator = ($group[0]->desc == true) ? 'asc' : 'desc';
-            $keys = $data->groupBy($group_column)/*->orderBy($group_column, $group_operator)*/
+             // !!!! ОБЯЗАТЕЛЬНО ПРОВЕРИТЬ НА ГРУППУ
+            if (count(json_decode($group)) ==3){
+                dd('true');
+               $group_operator = ($group[0]->desc == true) ? 'asc' : 'desc';
+            } else {
+                dd('false');
+                $group_operator = 'asc';
+            }
+            $keys = $data->groupBy($group_column)->orderBy($group_column, $group_operator)
             ->get($group_column)->toArray();
             foreach ($keys as $key) {
                 $a = (array)$key;
-                $shops = $model::where($group_column, '=', $a[$group_column])/*->orderBy($group_column, $group_operator)*/
+                $shops = $model::where($group_column, '=', $a[$group_column])->orderBy($group_column, $group_operator)
                 ->get();
                 $data_group[] = ['key' => $a[$group_column], 'items' => $shops, 'count' => count($shops), 'summary' => [1, 3]];
             }
