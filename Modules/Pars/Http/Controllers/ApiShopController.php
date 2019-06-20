@@ -37,40 +37,40 @@ class ApiShopController extends Controller
     {
         $string = strtolower($this->Escape_win($s));
 
-        // dd( $string);
+     //   [[["name","<","цук"],"or",["name","=",null]],"and",["url","=","цу"]]
         $patterns = array();
 
-        $patterns[0] = '/,"contains","(\w*)"]/u';
-        $patterns[1] = '/,"or",/';
-        $patterns[2] = '/,"and",/';
-        $patterns[3] = '/,"=",null]/';
-        $patterns[4] = '/,"<","(.*s*.*)"]/u';
-        $patterns[5] = '/,">","(.*s*.*)"]/u';
-        $patterns[6] = '/,"=","(\w*)"]/u';
-        $patterns[7] = '/,"=","(.*s*.*)"]/u';
+        $patterns[0] = '/\["(\w*)"/u'; //ПОЛЯ
+        $patterns[1] = '/,"(and|or)",/u'; // ГРУППИРОВКА
+        $patterns[2] = '/,"contains","(.*?)"/u'; // LIKE %%
+        $patterns[3] = '/,"notcontains","(.*?)"/u'; // LIKE %%
+        $patterns[4] = '/,"endswith","(.*?)"/u'; // LIKE  <%
+        $patterns[5] = '/,"startswith","(.*?)"/u'; // LIKE  >%
+        $patterns[6] = '/,"(>|<|=|<>)","(.*?)"/u';  // СИМВОЛЫ
+        $patterns[7] = '/,"(>|<|=|<>)",(\d*)/u';  // СИМВОЛЫ
+        $patterns[8] = '/,"(>|<|=|<>)",NULL/u'; // NULL
+        $patterns[9] = '/\[/u';
+        $patterns[10] = '/\]/u';
 
-        $patterns[8] = '/,"=",(\d*)/';
-        $patterns[9] = '/\[/';
-        $patterns[10] = '/\]/';
-        $patterns[11] = '/\"/';
 
+
+//
 
         $replacements = array();
 
+        $replacements[0]='($1';
+        $replacements[1]=' $1 ';
+        $replacements[2]=' like \'%$1%\'';
+        $replacements[3]=' not like \'%$1%\'';
+        $replacements[4]=' like \'%$1\'';
+        $replacements[5]=' like \'$1%\'';
+        $replacements[6]=' $1 \'$2\'';
+        $replacements[7]=' $1 $2';
+        $replacements[8]=' is null ';
+        $replacements[9]='(';
+        $replacements[10]=')';
 
-        $replacements[11] = ' like \'%$1%\')';
-        $replacements[10] = ' or ';
-        $replacements[9] = ' and ';
-        $replacements[8] = ' is null)';
-        $replacements[7] = ' < \'$1\')';
-        $replacements[6] = ' > \'$1\')';
-        $replacements[5] = ' = \'$1\')';
-        $replacements[4] = ' = \'$1\')';
 
-        $replacements[3] = ' = $1';
-        $replacements[2] = '(';
-        $replacements[1] = ')';
-        $replacements[0] = '';
 
 
         return preg_replace($patterns, $replacements, $string);
@@ -92,6 +92,7 @@ class ApiShopController extends Controller
         $sort = json_decode($request->sort);
 
         $filters = json_decode($request->filter);
+     //  dd($this->JsonToSQL(json_encode($filters)));
         $totalSummary = $request->totalSummary;
         $group = json_decode($request->group);
         $groupSummary = $request->groupSummary;
@@ -113,20 +114,15 @@ class ApiShopController extends Controller
         if (!$sort && $group && !$filters) {
             $data_group = [];
             $group_column = $group[0]->selector;
-             // !!!! ОБЯЗАТЕЛЬНО ПРОВЕРИТЬ НА ГРУППУ
-            if (count(json_decode($group)) ==3){
-                dd('true');
+            if ( array_key_exists('desc',(array)$group[0])){
                $group_operator = ($group[0]->desc == true) ? 'asc' : 'desc';
             } else {
-                dd('false');
                 $group_operator = 'asc';
             }
-            $keys = $data->groupBy($group_column)->orderBy($group_column, $group_operator)
-            ->get($group_column)->toArray();
+            $keys = $data->groupBy($group_column)->orderBy($group_column, $group_operator)->get($group_column)->toArray();
             foreach ($keys as $key) {
                 $a = (array)$key;
-                $shops = $model::where($group_column, '=', $a[$group_column])->orderBy($group_column, $group_operator)
-                ->get();
+                $shops = $model::where($group_column, '=', $a[$group_column])->orderBy($group_column, $group_operator)->get();
                 $data_group[] = ['key' => $a[$group_column], 'items' => $shops, 'count' => count($shops), 'summary' => [1, 3]];
             }
             $res['data'] = $data_group;
@@ -138,7 +134,11 @@ class ApiShopController extends Controller
         if (!$sort && $group && $filters) {
             $data_group = [];
             $group_column = $group[0]->selector;
-            $group_operator = ($group[0]->desc == true) ? 'asc' : 'desc';
+            if ( array_key_exists('desc',(array)$group[0])){
+                $group_operator = ($group[0]->desc == true) ? 'asc' : 'desc';
+            } else {
+                $group_operator = 'asc';
+            }
             $data = $data->whereRaw($this->JsonToSQL(json_encode($filters)));
             $keys = $data->groupBy($group_column)->orderBy($group_column, $group_operator)->get($group_column)->toArray();
             foreach ($keys as $key) {
@@ -174,7 +174,11 @@ class ApiShopController extends Controller
         if ($sort && $group && !$filters) {
             $data_group = [];
             $group_column = $group[0]->selector;
-            $group_operator = ($group[0]->desc == true) ? 'asc' : 'desc';
+            if ( array_key_exists('desc',(array)$group[0])){
+                $group_operator = ($group[0]->desc == true) ? 'asc' : 'desc';
+            } else {
+                $group_operator = 'asc';
+            }
             $sort_column = $sort[0]->selector;
             $sort_operator = ($sort[0]->desc == true) ? 'asc' : 'desc';
             $keys = $data->groupBy($group_column)->orderBy($group_column, $group_operator)->get($group_column)->toArray();
@@ -193,7 +197,11 @@ class ApiShopController extends Controller
         if ($sort && $group && $filters) {
             $data_group = [];
             $group_column = $group[0]->selector;
-            $group_operator = ($group[0]->desc == true) ? 'asc' : 'desc';
+            if ( array_key_exists('desc',(array)$group[0])){
+                $group_operator = ($group[0]->desc == true) ? 'asc' : 'desc';
+            } else {
+                $group_operator = 'asc';
+            }
             $sort_column = $sort[0]->selector;
             $sort_operator = ($sort[0]->desc == true) ? 'asc' : 'desc';
             $data = $data->whereRaw($this->JsonToSQL(json_encode($filters)));
