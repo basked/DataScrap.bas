@@ -46,9 +46,9 @@ class ApiShopController extends Controller
         $patterns[3] = '/,"notcontains","(.*?)"/u'; // LIKE %%
         $patterns[4] = '/,"endswith","(.*?)"/u'; // LIKE  <%
         $patterns[5] = '/,"startswith","(.*?)"/u'; // LIKE  >%
-        $patterns[6] = '/,"(>|<|=|<>)","(.*?)"/u';  // СИМВОЛЫ
-        $patterns[7] = '/,"(>|<|=|<>)",(\d*)/u';  // СИМВОЛЫ
-        $patterns[8] = '/,"(>|<|=|<>)",NULL/u'; // NULL
+        $patterns[6] = '/,"(>|<|=|<>|>=|<=)","(.*?)"/u';  // СИМВОЛЫ
+        $patterns[7] = '/,"(>|<|=|<>|>=|<=)",(\d*)/u';  // СИМВОЛЫ
+        $patterns[8] = '/,"(>|<|=|<>|>=|<=)",NULL/u'; // NULL
         $patterns[9] = '/\[/u';
         $patterns[10] = '/\]/u';
 
