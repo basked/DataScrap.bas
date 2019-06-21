@@ -197,8 +197,6 @@
                 pageSizes: [10, 25, 50],
                 selectTextOnEditStart: true,
                 startEditAction: 'click',
-                // переменная вкоторой храняться категории ID + NAME
-                categories: [{root_id: 241777, name: "basket"}, {root_id: 24219, name: "teksab"}]
 
             }
         },

@@ -63,8 +63,7 @@
 
 </template>
 <script>
-    // import 'devextreme/dist/css/dx.common.css';
-    // import 'devextreme/dist/css/dx.material.teal.dark.compact.css';
+
     import {DxCheckBox, DxSelectBox} from 'devextreme-vue';
     import {
         DxDataGrid,
