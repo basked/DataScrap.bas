@@ -2,14 +2,17 @@
 
 namespace Modules\Pars\Http\Controllers;
 
+use function GuzzleHttp\Psr7\str;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Routing\Controller;
+use Illuminate\Support\Facades\DB;
 use Modules\Pars\Entities\Category;
+use Modules\Pars\Entities\Product;
+use function MongoDB\BSON\toJSON;
 
-class ApiCategoryController extends Controller
+class ApiProductController extends Controller
 {
-
     /**
      * Display a listing of the resource.
      * @return Response
@@ -51,21 +54,24 @@ class ApiCategoryController extends Controller
         $patterns[10] = '/\]/u';
 
 
+
 //
 
         $replacements = array();
 
-        $replacements[0] = '($1';
-        $replacements[1] = ' $1 ';
-        $replacements[2] = ' like \'%$1%\'';
-        $replacements[3] = ' not like \'%$1%\'';
-        $replacements[4] = ' like \'%$1\'';
-        $replacements[5] = ' like \'$1%\'';
-        $replacements[6] = ' $1 \'$2\'';
-        $replacements[7] = ' $1 $2';
-        $replacements[8] = ' is null ';
-        $replacements[9] = '(';
-        $replacements[10] = ')';
+        $replacements[0]='($1';
+        $replacements[1]=' $1 ';
+        $replacements[2]=' like \'%$1%\'';
+        $replacements[3]=' not like \'%$1%\'';
+        $replacements[4]=' like \'%$1\'';
+        $replacements[5]=' like \'$1%\'';
+        $replacements[6]=' $1 \'$2\'';
+        $replacements[7]=' $1 $2';
+        $replacements[8]=' is null ';
+        $replacements[9]='(';
+        $replacements[10]=')';
+
+
 
 
         return preg_replace($patterns, $replacements, $string);
@@ -76,8 +82,8 @@ class ApiCategoryController extends Controller
     public function index(Request $request)
     {
 
-        $model = Category::class;
-        $fields = ['id', 'name', 'url', 'active', 'created_at'];
+        $model = Product::class;
+        $fields = ['id','category_id', 'product_id', 'brand', 'name', 'price'];
 
         $res = [];
         $skip = $request->skip;
@@ -91,7 +97,11 @@ class ApiCategoryController extends Controller
         $totalSummary = $request->totalSummary;
         $group = json_decode($request->group);
         $groupSummary = $request->groupSummary;
-        $data = $model::take($take)->skip($skip);
+        $data = Product::with('category')->take($take)->skip($skip);
+        // $data = Product::whereId(1)->with('category')->get(['name','category']);
+
+      //  dd($data);
+
         //1) только при обычном отображении таблицы
         if (!$sort && !$group && !$filters) {
             $res['data'] = $data->get($fields);
@@ -109,7 +119,7 @@ class ApiCategoryController extends Controller
         if (!$sort && $group && !$filters) {
             $data_group = [];
             $group_column = $group[0]->selector;
-            if (array_key_exists('desc', (array)$group[0])) {
+            if ( array_key_exists('desc',(array)$group[0])){
                 $group_operator = ($group[0]->desc == true) ? 'asc' : 'desc';
             } else {
                 $group_operator = 'asc';
@@ -129,7 +139,7 @@ class ApiCategoryController extends Controller
         if (!$sort && $group && $filters) {
             $data_group = [];
             $group_column = $group[0]->selector;
-            if (array_key_exists('desc', (array)$group[0])) {
+            if ( array_key_exists('desc',(array)$group[0])){
                 $group_operator = ($group[0]->desc == true) ? 'asc' : 'desc';
             } else {
                 $group_operator = 'asc';
@@ -169,7 +179,7 @@ class ApiCategoryController extends Controller
         if ($sort && $group && !$filters) {
             $data_group = [];
             $group_column = $group[0]->selector;
-            if (array_key_exists('desc', (array)$group[0])) {
+            if ( array_key_exists('desc',(array)$group[0])){
                 $group_operator = ($group[0]->desc == true) ? 'asc' : 'desc';
             } else {
                 $group_operator = 'asc';
@@ -192,7 +202,7 @@ class ApiCategoryController extends Controller
         if ($sort && $group && $filters) {
             $data_group = [];
             $group_column = $group[0]->selector;
-            if (array_key_exists('desc', (array)$group[0])) {
+            if ( array_key_exists('desc',(array)$group[0])){
                 $group_operator = ($group[0]->desc == true) ? 'asc' : 'desc';
             } else {
                 $group_operator = 'asc';
@@ -229,7 +239,12 @@ class ApiCategoryController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $shop = new Shop();
+        $shop->name = $request->name;
+        $shop->url = $request->url;
+        $shop->active = $request->active;
+        $shop->save();
+        return $shop;
     }
 
     /**
@@ -260,7 +275,18 @@ class ApiCategoryController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
+        $shop = Shop::findOrFail($id);
+        $shop->update();
+        if ($request->name) {
+            $shop->name = $request->name;
+        };
+        if ($request->url) {
+            $shop->url = $request->url;
+        };
+        if ($request->active) {
+            $shop->active = $request->active;
+        };
+        $shop->save();
     }
 
     /**
@@ -270,12 +296,7 @@ class ApiCategoryController extends Controller
      */
     public function destroy($id)
     {
-        //
+        $shop = Shop::findOrFail($id);
+        $shop->delete();
     }
-
-    public function categories_keys()
-    {
-        return Category::where('active',1)->get(['root_id','name'])->toJson();
-    }
-
 }

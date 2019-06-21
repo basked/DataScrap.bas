@@ -7,14 +7,15 @@
                 :show-borders="true"
         >
             <dx-column
-                    data-field="active"
-                    caption="Статус"
-                    data-type="boolean"
-                    :allow-grouping="false"
+                    data-field='category_id'
+                    caption="Категория"
+                    data-type="number"
+                    :allow-grouping="true"
+                    :allow-editing="false"
             >
                 <dx-lookup
-                        :data-source="statuses"
-                        value-expr="id"
+                        :data-source='categoriesData'
+                        value-expr="root_id"
                         display-expr="name"
                 />
             </dx-column>
@@ -94,6 +95,19 @@
         return value !== undefined && value !== null && value !== "";
     }
 
+
+    const categoriesData = {
+        store: new CustomStore({
+            key: 'root_id',
+            load: (method) => {
+                return axios.get(`api/categories_keys/`).then(response => {
+                    return response.data
+                });
+            }
+        })
+    }
+
+
     const gridDataSource = {
         store: new CustomStore({
             load: (loadOptions) => {
@@ -114,7 +128,7 @@
                 });
                 console.log(params);
                 params = params.slice(0, -1);
-                return fetch(`api/shops${params}`)
+                return fetch(`api/products${params}`)
                     .then(handleErrors)
                     .then(response => response.json())
                     .then((result) => {
@@ -128,16 +142,16 @@
                     });
             },
             insert: (values) => {
-                return axios.post(`api/shops_insert`, values);//.then(handleErrors);
+                return axios.post(`api/products_insert`, values);//.then(handleErrors);
             },
 
             remove: (key) => {
-                return axios.delete(`api/shops_delete/` + encodeURIComponent(key.id), {
+                return axios.delete(`api/products_delete/` + encodeURIComponent(key.id), {
                     method: "DELETE"
                 });//.then(handleErrors);
             },
             update: (key, values) => {
-                return axios.put(`api/shops_update/` + encodeURIComponent(key.id), values);//.then(handleErrors);
+                return axios.put(`api/products_update/` + encodeURIComponent(key.id), values);//.then(handleErrors);
             }
         })
     };
@@ -161,16 +175,11 @@
         },
         data() {
             return {
+                categoriesData,
+                columns: ['name', 'brand', 'price'],
 
-                columns: ['id', 'name', 'url'],
-                statuses: [{
-                    "id": 1,
-                    "name": "Активный"
-                }, {
-                    "id": 0,
-                    "name": "Неактивный"
-                }],
                 dataSource: gridDataSource,
+
                 select: [
                     'id',
                     'name',
@@ -187,9 +196,17 @@
                 },
                 pageSizes: [10, 25, 50],
                 selectTextOnEditStart: true,
-                startEditAction: 'click'
-            };
+                startEditAction: 'click',
+                // переменная вкоторой храняться категории ID + NAME
+                categories: [{root_id: 241777, name: "basket"}, {root_id: 24219, name: "teksab"}]
+
+            }
+        },
+        mounted() {
+            //     axios.get(`api/categories_keys/`).then(response => (Array.prototype.push.apply(this.categories, response.data)));
+            //    console.log(this.categories);
         }
+
     };
 </script>
 <style>

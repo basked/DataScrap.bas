@@ -29,10 +29,19 @@ Route::prefix('pars')->group(function () {
 
 
     // Category API
-    Route::get('/api/categories{patams?}','ApiCategoryController@index');
-    Route::post('/api/categories_insert','ApiCategoryController@store');
+
+    Route::get('/api/categories/{patams?}','ApiCategoryController@index');
+    Route::post('/api/categories_insert/','ApiCategoryController@store');
     Route::put('/api/categories_update/{id}','ApiCategoryController@update');
     Route::delete('/api/categories_delete/{id}','ApiCategoryController@destroy');
+    Route::get('api/categories_keys/','ApiCategoryController@categories_keys');
+
+
+    // Product API
+    Route::get('/api/products{patams?}','ApiProductController@index');
+    Route::post('/api/products_insert','ApiProductController@store');
+    Route::put('/api/products_update/{id}','ApiProductController@update');
+    Route::delete('/api/products_delete/{id}','ApiProductController@destroy');
 
 
     Route::get('/', 'ParsController@index');

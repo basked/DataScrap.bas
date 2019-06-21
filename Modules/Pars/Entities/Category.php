@@ -43,7 +43,7 @@ class Category extends Model
 {
     protected $table = 'pars_categories';
     protected $fillable = [];
-    protected $hidden =['site_id', 'root_id'];
+   // protected $hidden =['site_id', 'root_id'];
  //   protected $visible = ['*'];
 
 

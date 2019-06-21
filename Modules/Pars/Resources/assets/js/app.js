@@ -34,6 +34,7 @@ if (token) {
 //Vue.component('dev-grid', require('./components/DevGrid.vue').default);
 Vue.component('dev-grid-shops', require('./components/DevGridShops.vue').default);
 Vue.component('dev-grid-categories', require('./components/DevGridCategories.vue').default);
+Vue.component('dev-grid-products', require('./components/DevGridProducts.vue').default);
 
 
 /**
@@ -41,6 +42,8 @@ Vue.component('dev-grid-categories', require('./components/DevGridCategories.vue
  * the page. Then, you may begin adding components to this application
  * or customize the JavaScript scaffolding to fit your unique needs.
  */
+import 'devextreme/dist/css/dx.common.css';
+import 'devextreme/dist/css/dx.material.teal.light.compact.css';
 
 const app = new Vue({
     el: '#app',
