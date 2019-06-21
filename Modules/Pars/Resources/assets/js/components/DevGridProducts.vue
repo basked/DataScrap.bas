@@ -5,6 +5,8 @@
                 :remote-operations="remoteOperations"
                 :columns="columns"
                 :show-borders="true"
+                :allow-column-resizing="true"
+                :allow-column-reordering="true"
         >
             <dx-column
                     data-field='category_id'
@@ -176,10 +178,8 @@
         data() {
             return {
                 categoriesData,
-                columns: ['name', 'brand', 'price'],
-
+                columns: ['name', {dataField: "brand", caption: "Бренд", width: 150},{dataField: "price", caption:"Цена" , width: 70 }],
                 dataSource: gridDataSource,
-
                 select: [
                     'id',
                     'name',
