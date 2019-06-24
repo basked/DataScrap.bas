@@ -1,6 +1,13 @@
 window.Vue = require('vue');
-window.axios = require('axios');
 
+// подключаем Bootstarp
+import 'bootstrap/dist/css/bootstrap.css'
+import 'bootstrap-vue/dist/bootstrap-vue.css'
+import BootstrapVue from 'bootstrap-vue'
+Vue.use(BootstrapVue);
+
+
+window.axios = require('axios');
 window.axios.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
 // window.axios.defaults.headers.common = {
 //     'X-Requested-With': 'XMLHttpRequest',
@@ -19,32 +26,33 @@ if (token) {
 } else {
     console.error('CSRF token not found: https://laravel.com/docs/csrf#csrf-x-csrf-token');
 }
-/**
- * The following block of code may be used to automatically register your
- * Vue components. It will recursively scan this directory for the Vue
- * components and automatically register them with their "basename".
- *
- * Eg. ./components/ExampleComponent.vue -> <example-component></example-component>
- */
-
-// const files = require.context('./', true, /\.vue$/i);
-// files.keys().map(key => Vue.component(key.split('/').pop().split('.')[0], files(key).default));
 
 
-//Vue.component('dev-grid', require('./components/DevGrid.vue').default);
+
+
+
+
+// Стили DevExtreme
+import 'devextreme/dist/css/dx.common.css';
+import 'devextreme/dist/css/dx.material.teal.light.compact.css';
+
+
+
+// подключаем файл для использования метода Route
+// см  ссылку https://medium.com/@sargilla/laravel-named-routes-in-vue-js-components-7b03e96bede8
+
+
+
+
+// Мои компоненты
 Vue.component('dev-grid-shops', require('./components/DevGridShops.vue').default);
 Vue.component('dev-grid-categories', require('./components/DevGridCategories.vue').default);
 Vue.component('dev-grid-products', require('./components/DevGridProducts.vue').default);
 Vue.component('bas-tool-bar', require('./components/BasToolBar.vue').default);
 
 
-/**
- * Next, we will create a fresh Vue application instance and attach it to
- * the page. Then, you may begin adding components to this application
- * or customize the JavaScript scaffolding to fit your unique needs.
- */
-import 'devextreme/dist/css/dx.common.css';
-import 'devextreme/dist/css/dx.material.teal.light.compact.css';
+
+
 
 const app = new Vue({
     el: '#app',

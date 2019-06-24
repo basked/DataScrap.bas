@@ -1,10 +1,6 @@
 <template>
     <div>
-        <!--<form :action="this.route" method="POST">-->
-        <!--@method('DELETE')-->
-        <!--@csrf-->
-        <!--</form>-->
-        <dx-toolbar :items="items" />
+         <dx-toolbar :items="items" />
     </div>
 </template>
 
@@ -14,11 +10,12 @@
     import notify from 'devextreme/ui/notify';
 
     export default {
+
         name: "BasToolBar",
+        props: ['homeRoute'],
         components: {
             DxToolbar
         },
-        props: ['route'],
         data() {
             return {
 
@@ -27,10 +24,10 @@
                     widget: 'dxButton',
                     options: {
                         type: 'back',
+                        icon: 'edit',
+
                         text: 'Back',
                         onClick: (e) => {
-                            axios.get(`http://datascrap.bas/pars/shops`);//.then(handleErrors);
-
                             notify(e.itemData+'Back button has been clicked!')
                         }
                     }

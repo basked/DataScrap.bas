@@ -1,6 +1,7 @@
 <template>
     <div id="data-grid-products">
         <bas-tool-bar></bas-tool-bar>
+
              <dx-data-grid
                 :data-source="dataSource"
                 :remote-operations="remoteOperations"
