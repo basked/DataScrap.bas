@@ -1,34 +1,36 @@
 <template>
     <div id="data-grid-shops">
         <dx-data-grid
-            :data-source="dataSource"
-            :remote-operations="remoteOperations"
-            :columns="columns"
-            :show-borders="true"
+                :data-source="dataSource"
+                :remote-operations="remoteOperations"
+                :columns="columns"
+                :show-borders="true"
+                :allow-column-resizing="true"
+                :allow-column-reordering="true"
         >
             <dx-column
-                data-field="active"
-                caption="Статус"
-                data-type="boolean"
-                :allow-grouping="false"
+                    data-field="active"
+                    caption="Статус"
+                    data-type="boolean"
+                    :allow-grouping="false"
             >
                 <dx-lookup
-                    :data-source="statuses"
-                    value-expr="id"
-                    display-expr="name"
+                        :data-source="statuses"
+                        value-expr="id"
+                        display-expr="name"
                 />
             </dx-column>
             <dx-editing
-                :select-text-on-edit-start="selectTextOnEditStart"
-                :start-edit-action="startEditAction"
-                :allow-updating="true"
-                :allow-adding="true"
-                :allow-deleting="true"
-                mode="batch"/>
+                    :select-text-on-edit-start="selectTextOnEditStart"
+                    :start-edit-action="startEditAction"
+                    :allow-updating="true"
+                    :allow-adding="true"
+                    :allow-deleting="true"
+                    mode="batch"/>
 
             <dx-search-panel
-                :visible="true"
-                :highlight-case-sensitive="true"
+                    :visible="true"
+                    :highlight-case-sensitive="true"
             />
             <dx-filter-row :visible="true"/>
             <dx-header-filter :visible="true"/>
@@ -38,8 +40,8 @@
                          expand-mode="rowClick"
             />
             <dx-pager
-                :allowed-page-sizes="pageSizes"
-                :show-page-size-selector="true"
+                    :allowed-page-sizes="pageSizes"
+                    :show-page-size-selector="true"
             />
             <dx-paging :page-size="10"/>
         </dx-data-grid>
@@ -47,15 +49,15 @@
             <div class="caption">Options</div>
             <div class="option">
                 <dx-check-box
-                    v-model="selectTextOnEditStart"
-                    text="Поиск..."
+                        v-model="selectTextOnEditStart"
+                        text="Поиск..."
                 />
             </div>
             <div class="option">
                 <span>Start Edit Action</span>
                 <dx-select-box
-                    :items="['click', 'dblClick']"
-                    v-model="startEditAction"
+                        :items="['click', 'dblClick']"
+                        v-model="startEditAction"
                 />
             </div>
         </div>
@@ -63,9 +65,8 @@
 
 </template>
 <script>
-    // import 'devextreme/dist/css/dx.common.css';
-    // import 'devextreme/dist/css/dx.material.teal.dark.compact.css';
     import {DxCheckBox, DxSelectBox} from 'devextreme-vue';
+
     import {
         DxDataGrid,
         DxColumn,
@@ -78,7 +79,8 @@
         DxScrolling,
         DxSearchPanel,
         DxFilterRow,
-        DxHeaderFilter
+        DxHeaderFilter,
+
     } from 'devextreme-vue/data-grid';
     import {DxSwitch} from 'devextreme-vue/switch';
     import CustomStore from 'devextreme/data/custom_store';
@@ -188,6 +190,7 @@
                 pageSizes: [10, 25, 50],
                 selectTextOnEditStart: true,
                 startEditAction: 'click'
+
             };
         }
     };

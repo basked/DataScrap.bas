@@ -5,6 +5,8 @@
                 :remote-operations="remoteOperations"
                 :columns="columns"
                 :show-borders="true"
+                :allow-column-resizing="true"
+                :allow-column-reordering="true"
         >
             <dx-column
                     data-field="active"

@@ -1,6 +1,7 @@
 <template>
-    <div id="data-grid-shops">
-        <dx-data-grid
+    <div id="data-grid-products">
+        <bas-tool-bar></bas-tool-bar>
+             <dx-data-grid
                 :data-source="dataSource"
                 :remote-operations="remoteOperations"
                 :columns="columns"
@@ -66,8 +67,7 @@
 
 </template>
 <script>
-    // import 'devextreme/dist/css/dx.common.css';
-    // import 'devextreme/dist/css/dx.material.teal.dark.compact.css';
+
     import {DxCheckBox, DxSelectBox} from 'devextreme-vue';
     import {
         DxDataGrid,
@@ -86,6 +86,7 @@
     import {DxSwitch} from 'devextreme-vue/switch';
     import CustomStore from 'devextreme/data/custom_store';
     import 'whatwg-fetch';
+
 
     function handleErrors(response) {
         if (!response.ok)
