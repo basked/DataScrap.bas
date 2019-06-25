@@ -100,6 +100,8 @@ Route::prefix('pars')->group(function () {
 
             $products['data-code'] = $node->filter('dl>dt')->filter('.result__root')->filter(' .g-price.result__price.cr-price__in>span')->filter('.g-item-data.j-item-data')->attr('data-code');
             $products['data-name'] = $node->filter('dl>dt')->filter('.result__root')->filter(' .g-price.result__price.cr-price__in>span')->filter('.g-item-data.j-item-data')->attr('data-name');
+            $products['data-category'] = $node->filter('dl>dt')->filter('.result__root')->filter(' .g-price.result__price.cr-price__in>span')->filter('.g-item-data.j-item-data')->attr('data-category');
+            $products['data-category_id'] = $node->filter('dl>dt')->filter('.result__root')->filter(' .g-price.result__price.cr-price__in>span')->filter('.g-item-data.j-item-data')->attr('data-category_id');
             $products['data-producer_name'] = $node->filter('dl>dt')->filter('.result__root')->filter(' .g-price.result__price.cr-price__in>span')->filter('.g-item-data.j-item-data')->attr('data-producer_name');
             $products['data-price'] = $node->filter('dl>dt')->filter('.result__root')->filter(' .g-price.result__price.cr-price__in>span')->filter('.g-item-data.j-item-data')->attr('data-price');
             $products['data-old_price'] = $node->filter('dl>dt')->filter('.result__root')->filter(' .g-price.result__price.cr-price__in>span')->filter('.g-item-data.j-item-data')->attr('data-old_price');
