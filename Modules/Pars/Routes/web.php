@@ -98,11 +98,11 @@ Route::prefix('pars')->group(function () {
         $products_all=[];
         $products_all=  $crawler->filter('#j-search_result')->filter('ul>li')->each(function (Crawler $node, $i) use ($products_all) {
 
-            $products['data-code'] = $node->filter('dl>dt')->filter('.result__root')->filter(' .g-price.result__price.cr-price__in>span')->eq(1)->attr('data-code');
-            $products['data-name'] = $node->filter('dl>dt')->filter('.result__root')->filter(' .g-price.result__price.cr-price__in>span')->eq(1)->attr('data-name');
-            $products['data-producer_name'] = $node->filter('dl>dt')->filter('.result__root')->filter(' .g-price.result__price.cr-price__in>span')->eq(1)->attr('data-producer_name');
-            $products['data-price'] = $node->filter('dl>dt')->filter('.result__root')->filter(' .g-price.result__price.cr-price__in>span')->eq(1)->attr('data-price');
-            $products['data-old_price'] = $node->filter('dl>dt')->filter('.result__root')->filter(' .g-price.result__price.cr-price__in>span')->eq(1)->attr('data-old_price');
+            $products['data-code'] = $node->filter('dl>dt')->filter('.result__root')->filter(' .g-price.result__price.cr-price__in>span')->filter('.g-item-data.j-item-data')->attr('data-code');
+            $products['data-name'] = $node->filter('dl>dt')->filter('.result__root')->filter(' .g-price.result__price.cr-price__in>span')->filter('.g-item-data.j-item-data')->attr('data-name');
+            $products['data-producer_name'] = $node->filter('dl>dt')->filter('.result__root')->filter(' .g-price.result__price.cr-price__in>span')->filter('.g-item-data.j-item-data')->attr('data-producer_name');
+            $products['data-price'] = $node->filter('dl>dt')->filter('.result__root')->filter(' .g-price.result__price.cr-price__in>span')->filter('.g-item-data.j-item-data')->attr('data-price');
+            $products['data-old_price'] = $node->filter('dl>dt')->filter('.result__root')->filter(' .g-price.result__price.cr-price__in>span')->filter('.g-item-data.j-item-data')->attr('data-old_price');
            echo '<pre>';
             print_r($products);
             echo '</pre>';
