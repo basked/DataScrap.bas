@@ -32,6 +32,10 @@ use Symfony\Component\DomCrawler\Crawler;
  * @method static \Illuminate\Database\Eloquent\Builder|\Modules\Pars\Entities\Product whereProductId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\Modules\Pars\Entities\Product whereUpdatedAt($value)
  * @mixin \Eloquent
+ * @property int $sku
+ * @property int $active
+ * @method static \Illuminate\Database\Eloquent\Builder|\Modules\Pars\Entities\Product whereActive($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\Modules\Pars\Entities\Product wherePatioCode($value)
  */
 class Product extends Model
 {
@@ -114,6 +118,7 @@ class Product extends Model
                              ];
                          });*/
                         return ['product_id' => trim($data_product->attr('data-id')),
+                            'sku'=>preg_replace("/[^0-9]/", '',   $node->filter('.product-middle-patio-code')->text()),
                             'name' => $data_product->attr('data-name'),
                             'brand' => $data_product->attr('data-brand'),
                             'price' => $data_product->attr('data-price'),
@@ -131,6 +136,8 @@ class Product extends Model
                             $np->name = $product['name'];
                             $np->brand = $product['brand'];
                             $np->price = $product['price'];
+                            $np->sku=(int)$product['sku'];
+                            $np->active= 1;
                             $np->save();
                             // если нет акции добавляем
                             foreach ($product['actions'] as $act) {
@@ -195,6 +202,7 @@ class Product extends Model
             $mc->success(function ($instance) {
                 $crawler = new Crawler($instance->response->listHtml);
                 $products = $crawler->filter('.spec-product.js-product-item')->each(function (Crawler $node, $i) use ($instance) {
+
                     $data_product = $node->filter('.spec-product-left>a.product-link');
                     // берем только левое акционное предложение (Михалыч сказал)
                     $data_actions = $node->filter('.spec-product-left-middle-footer-right-first>a.product-item-sticker')->each(function (Crawler $node, $i) {
@@ -205,11 +213,13 @@ class Product extends Model
                         ];
                     });
                     return ['product_id' => trim($data_product->attr('data-id')),
+
                         'name' => $data_product->attr('data-name'),
                         'brand' => $data_product->attr('data-brand'),
                         'price' => $data_product->attr('data-price'),
                         'site_id' => $instance->response->updateSection->section->ID,
                         'root_id' => $instance->response->updateSection->section->UF_IB_RELATED_ID,
+                        'sku'=>preg_replace("/[^0-9]/", '',   $node->filter('.product-middle-patio-code')->text()),
                         'actions' => $data_actions
                     ];
                 });
@@ -222,6 +232,8 @@ class Product extends Model
                         $np->name = $product['name'];
                         $np->brand = $product['brand'];
                         $np->price = $product['price'];
+                        $np->sku=$product['sku'];
+                        $np->active=1;
                         $np->save();
                         // если нет акции добавляем
                         foreach ($product['actions'] as $act) {

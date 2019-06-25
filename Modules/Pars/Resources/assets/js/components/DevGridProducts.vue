@@ -180,7 +180,7 @@
         data() {
             return {
                 categoriesData,
-                columns: ['name', {dataField: "brand", caption: "Бренд", width: 150},{dataField: "price", caption:"Цена" , width: 70 }],
+                columns: ['name', {dataField:"sku", caption:'Код на сайте', width: 100}, {dataField: "brand", caption: "Бренд", width: 150},{dataField: "price", caption:"Цена" , width: 70 }],
                 dataSource: gridDataSource,
                 select: [
                     'id',

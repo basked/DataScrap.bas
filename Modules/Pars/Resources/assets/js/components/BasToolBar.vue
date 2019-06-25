@@ -1,12 +1,20 @@
 <template>
     <div>
-         <dx-toolbar :items="items" />
+        <dx-load-indicator
+                id="large-indicator"
+                :height="60"
+                :width="60"
+                :visible="loadIndicatorVisible"
+        />
+        <a class="nav-link" :href="route('CategoryIndex')">Home</a>
+        <dx-toolbar :items="items"/>
     </div>
 </template>
 
 <script>
 
     import DxToolbar from 'devextreme-vue/toolbar';
+    import {DxLoadIndicator} from 'devextreme-vue/load-indicator';
     import notify from 'devextreme/ui/notify';
 
     export default {
@@ -14,21 +22,31 @@
         name: "BasToolBar",
         props: ['homeRoute'],
         components: {
-            DxToolbar
+            DxToolbar,
+            DxLoadIndicator
         },
         data() {
             return {
-
+                loadIndicatorVisible: false,
                 items: [{
                     location: 'before',
                     widget: 'dxButton',
                     options: {
                         type: 'back',
-                        icon: 'edit',
-
+                        icon: 'repeat',
+                        hint: 'Спарсить данные',
                         text: 'Back',
                         onClick: (e) => {
-                            notify(e.itemData+'Back button has been clicked!')
+                            this.loadIndicatorVisible = true;
+                            notify('Парсинг данных запущен!')
+                            setTimeout(() => {
+                                this.loadIndicatorVisible = false;
+                            }, 360000);
+
+                            return axios.get(route('ProdСategoriesPars'))
+                                .then((response) => {
+                                    return response.data;
+                                });
                         }
                     }
                 },
@@ -52,22 +70,25 @@
                         widget: 'dxSelectBox',
                         locateInMenu: 'auto',
                         options: {
-                            items:['All','Family','Favorites'],
+                            items: ['All', 'Family', 'Favorites'],
                             icon: 'refresh',
                             onItemClick: (e) => {
-                               // console.log(e);
-                                notify(e.itemData+ ' Center button has been clicked!');
+                                // console.log(e);
+                                notify(e.itemData + ' Center button has been clicked!');
                             }
                         }
                     }
                 ]
             }
+        },
+        methods: {
+            route: route
         }
     }
 </script>
 
 <style scoped>
- .dx-toolbar{
-     background-color: azure;
-}
+    .dx-toolbar {
+        background-color: azure;
+    }
 </style>

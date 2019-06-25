@@ -22,6 +22,8 @@ use Illuminate\Database\Eloquent\Model;
  * @method static \Illuminate\Database\Eloquent\Builder|\Modules\Pars\Entities\Shop whereUpdatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\Modules\Pars\Entities\Shop whereUrl($value)
  * @mixin \Eloquent
+ * @property int $active
+ * @method static \Illuminate\Database\Eloquent\Builder|\Modules\Pars\Entities\Shop whereActive($value)
  */
 class Shop extends Model
 {

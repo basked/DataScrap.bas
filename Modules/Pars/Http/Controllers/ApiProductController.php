@@ -83,7 +83,7 @@ class ApiProductController extends Controller
     {
 
         $model = Product::class;
-        $fields = ['id','category_id', 'product_id', 'brand', 'name', 'price'];
+        $fields = ['id','category_id','sku', 'product_id', 'brand', 'name', 'price', 'active'];
 
         $res = [];
         $skip = $request->skip;

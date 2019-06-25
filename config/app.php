@@ -177,6 +177,8 @@ return [
         App\Providers\EventServiceProvider::class,
         App\Providers\RouteServiceProvider::class,
         Barryvdh\LaravelIdeHelper\IdeHelperServiceProvider::class,
+        // для работы с именованными роутами
+        Tightenco\Ziggy\ZiggyServiceProvider::class
     ],
 
     /*
