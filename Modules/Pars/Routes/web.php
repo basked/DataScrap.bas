@@ -72,9 +72,35 @@ Route::prefix('pars')->group(function () {
     Route::get('/inactcategory/{id}', 'CategoryController@inactive')->name('CategoryInactive');
     Route::get('/actcategory/{id}', 'CategoryController@active')->name('CategoryActive');
     Route::get('/check_act_category/{ids}', 'CategoryController@activeCheck')->name('CategoryActiveCheck');
-    Route::get('/categories/page', function () {
+    Route::get('/categories/test', function () {
 
 
+        $s='Уход за волосами / Аксессуары для окрашивания волос (5850)';
+
+
+        $base_url = 'https://www.21vek.by';
+        $curl = new Curl();
+        $curl->setOpt(CURLOPT_RETURNTRANSFER, TRUE);
+        $curl->setOpt(CURLOPT_SSL_VERIFYPEER, FALSE);
+        if (env('USE_PROXY')) {
+            $curl->setProxy('172.16.15.33', 3128, 'gt-asup6', 'teksab');
+        };
+        $data = $curl->post($base_url);
+        $crawler = new Crawler($data);
+        $categories = [];
+        $crawler->filter('#j-nav')->filter('.nav-sub__item.g-grouplinks__item ')->each(function (Crawler $node, $i) use ($categories) {
+
+            $categories['data-ga_action'] = trim($node->filter('a')->attr('data-ga_action'));
+            $categories['site_id'] = trim(preg_replace("/[^0-9]/", '', $categories['data-ga_action']));
+            $categories['url'] = trim($node->filter('a')->attr('href'));
+            $categories['root1'] = trim($node->filter('a')->attr('data-ga_label'));
+            $categories['root2'] = explode('/', $categories['data-ga_action'])[0];
+            $categories['root3'] = trim($node->text());
+
+            echo '<pre>';
+            print_r($categories);
+            echo '</pre>';
+        });
     }
     );
 
@@ -92,11 +118,12 @@ Route::prefix('pars')->group(function () {
         $curl = new Curl();
         $curl->setOpt(CURLOPT_RETURNTRANSFER, TRUE);
         $curl->setOpt(CURLOPT_SSL_VERIFYPEER, FALSE);
-        $curl->setProxy('172.16.15.33', 3128, 'gt-asup6', 'teksab');
+        if (env('USE_PROXY')) {
+            $curl->setProxy('172.16.15.33', 3128, 'gt-asup6', 'teksab');
+        };
         $data = $curl->post($base_url);
         $crawler = new Crawler($data);
-        $products_all=[];
-        $products_all=  $crawler->filter('#j-search_result')->filter('ul>li')->each(function (Crawler $node, $i) use ($products_all) {
+        $crawler->filter('#j-search_result')->filter('ul>li')->each(function (Crawler $node, $i) use ($products_all) {
 
             $products['data-code'] = $node->filter('dl>dt')->filter('.result__root')->filter(' .g-price.result__price.cr-price__in>span')->filter('.g-item-data.j-item-data')->attr('data-code');
             $products['data-name'] = $node->filter('dl>dt')->filter('.result__root')->filter(' .g-price.result__price.cr-price__in>span')->filter('.g-item-data.j-item-data')->attr('data-name');
@@ -105,11 +132,11 @@ Route::prefix('pars')->group(function () {
             $products['data-producer_name'] = $node->filter('dl>dt')->filter('.result__root')->filter(' .g-price.result__price.cr-price__in>span')->filter('.g-item-data.j-item-data')->attr('data-producer_name');
             $products['data-price'] = $node->filter('dl>dt')->filter('.result__root')->filter(' .g-price.result__price.cr-price__in>span')->filter('.g-item-data.j-item-data')->attr('data-price');
             $products['data-old_price'] = $node->filter('dl>dt')->filter('.result__root')->filter(' .g-price.result__price.cr-price__in>span')->filter('.g-item-data.j-item-data')->attr('data-old_price');
-           echo '<pre>';
+            echo '<pre>';
             print_r($products);
             echo '</pre>';
-        }) ;
-//        dd($products_all);
+        });
+
     });
 
     //Акции
