@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Routing\Controller;
 use Illuminate\Support\Facades\DB;
+use Modules\Pars\Entities\Category;
 use Modules\Pars\Entities\Shop;
 use function MongoDB\BSON\toJSON;
 
@@ -293,5 +294,12 @@ class ApiShopController extends Controller
     {
         $shop = Shop::findOrFail($id);
         $shop->delete();
+    }
+
+
+    // все магазины для lookup поля в категориях
+    public function shops_keys()
+    {
+      return Shop::whereActive(true)->get(['id','name'])->toJson();
     }
 }

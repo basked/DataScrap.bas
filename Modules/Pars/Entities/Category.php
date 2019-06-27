@@ -44,7 +44,7 @@ class Category extends Model
     protected $table = 'pars_categories';
     protected $fillable = [];
    // protected $hidden =['site_id', 'root_id'];
- //   protected $visible = ['*'];
+//    protected $visible = ['*'];
 
 
     // саязь с продуктами
@@ -320,6 +320,48 @@ class Category extends Model
         });
         $mc->start();
 
+
+    }
+
+//////////////////////////////////21 век /////////////////////////////////////
+// Функции для работы с 21 веком
+    public static function updateProductCnt_21(){
+        echo date("H:i:s");
+        $base_url='https://www.21vek.by/';
+        ini_set('max_execution_time', 720);
+        $categories= Category::whereShopId(2)->whereActive(true)->where('url','!=','')->get(['id','name','url']);
+        $mc = new MultiCurl();
+        if (env('USE_PROXY')) {
+            $mc->setProxy('172.16.15.33', 3128, 'gt-asup6', 'teksab');
+        };
+        $mc->setConcurrency(60);
+        $mc->setTimeout(160);
+        foreach ($categories as $category) {
+            $mc->addGet($base_url.$category->url);
+        }
+        $mc->success(function ($instance) {
+            try {
+                $html = $instance->response;
+                $crawler = new DomCrawler\Crawler($html);
+                $cnt = (int)trim(explode('из', $crawler->filter('.cr-paginator_page_list')->text())[1]);
+                $cat = Category::where('url',str_replace('https://www.21vek.by/','', $instance->url))->first();
+                $cat->products_cnt = $cnt;
+                $cat->save();
+            } catch (Exception $e) {
+                echo 'Выброшено исключение: ', $e->getMessage(), "\n";
+                echo  $instance->url;
+            };
+        });
+        $mc->error(function ($instance) {
+            echo 'call to "' . $instance->url . '" was unsuccessful.' . "<br>";
+            echo 'error code: ' . $instance->errorCode . "<br>";
+            echo 'error message: ' . $instance->errorMessage . "<br>";
+        });
+        $mc->complete(function ($instance) {
+            echo 'call to "' . $instance->url . '" completed.' . "<br>";
+        });
+        $mc->start();
+        echo date("H:i:s");
 
     }
 

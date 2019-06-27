@@ -77,7 +77,7 @@ class ApiCategoryController extends Controller
     {
 
         $model = Category::class;
-        $fields = ['id', 'name', 'url', 'active', 'created_at'];
+        $fields = ['id', 'name','shop_id', 'url', 'active', 'created_at'];
 
         $res = [];
         $skip = $request->skip;
@@ -272,7 +272,7 @@ class ApiCategoryController extends Controller
     {
         //
     }
-
+    // все категории для lookup поля в товарах
     public function categories_keys()
     {
         return Category::where('active',1)->get(['root_id','name'])->toJson();

@@ -9,6 +9,20 @@
                 :allow-column-reordering="true"
         >
             <dx-column
+                    data-field='shop_id'
+                    caption="Магазин"
+                    data-type="number"
+                    :allow-grouping="true"
+                    :allow-editing="false"
+            >
+                <dx-lookup
+                        :data-source='shopsData'
+                        value-expr="id"
+                        display-expr="name"
+                />
+            </dx-column>
+
+            <dx-column
                     data-field="active"
                     caption="Статус"
                     data-type="boolean"
@@ -96,6 +110,18 @@
         return value !== undefined && value !== null && value !== "";
     }
 
+    const shopsData = {
+        store: new CustomStore({
+            key: 'id',
+            load: (method) => {
+                return axios.get(`api/shops_keys/`).then(response => {
+                    return response.data
+                });
+            }
+        })
+    }
+
+
     const gridDataSource = {
         store: new CustomStore({
             load: (loadOptions) => {
@@ -172,6 +198,7 @@
                     'id': 0,
                     'name': 'Неактивный'
                 }],
+                shopsData,
                 dataSource: gridDataSource,
                 select: [
                     'id',

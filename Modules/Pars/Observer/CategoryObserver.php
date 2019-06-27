@@ -24,10 +24,13 @@ class CategoryObserver
 //перед созданием
     public function creating(Category $category)
     {
-        $category->site_id = preg_match('~(\d+)~', $category->url, $out) ? $out[0] : 0;
-        // долго парсится - поэтом лучше это сделать в отдельом цикле
-        $data = Category::getParsCategory($category->site_id);
-        $category->root_id = ($data['UF_IB_RELATED_ID'] > 0) ? $data['UF_IB_RELATED_ID'] : 0;
+        // только для 5 элемента
+        if ($category->shop_id == 1) {
+            $category->site_id = preg_match('~(\d+)~', $category->url, $out) ? $out[0] : 0;
+            // долго парсится - поэтом лучше это сделать в отдельом цикле
+            $data = Category::getParsCategory($category->site_id);
+            $category->root_id = ($data['UF_IB_RELATED_ID'] > 0) ? $data['UF_IB_RELATED_ID'] : 0;
+        }
     }
 }
 
