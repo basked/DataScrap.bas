@@ -77,7 +77,7 @@ class ApiCategoryController extends Controller
     {
 
         $model = Category::class;
-        $fields = ['id', 'name','shop_id', 'url', 'active', 'created_at'];
+        $fields = ['id', 'name','shop_id', 'url','products_cnt', 'active', 'created_at'];
 
         $res = [];
         $skip = $request->skip;
@@ -95,7 +95,7 @@ class ApiCategoryController extends Controller
         //1) только при обычном отображении таблицы
         if (!$sort && !$group && !$filters) {
             $res['data'] = $data->get($fields);
-            $res['totalCount'] = $model::all()->count();
+            $res['totalCount'] = $data->count();
         }
 
         //2) только поиск
@@ -121,8 +121,8 @@ class ApiCategoryController extends Controller
                 $data_group[] = ['key' => $a[$group_column], 'items' => $shops, 'count' => count($shops), 'summary' => [1, 3]];
             }
             $res['data'] = $data_group;
-            $res['groupCount'] = $model::all()->groupBy($group_column)->count();
-            $res['totalCount'] = $model::all()->count();
+            $res['groupCount'] = $data->groupBy($group_column)->count();
+            $res['totalCount'] = $data->count();
         }
 
         //4) если есть параметр групировки и сортировки нет фильтрации в запросе
@@ -142,8 +142,8 @@ class ApiCategoryController extends Controller
                 $data_group[] = ['key' => $a[$group_column], 'items' => $shops, 'count' => count($shops), 'summary' => [1, 3]];
             }
             $res['data'] = $data_group;
-            $res['groupCount'] = $model::all()->groupBy($group_column)->count();
-            $res['totalCount'] = $model::all()->count();
+            $res['groupCount'] = $data->whereRaw($this->JsonToSQL(json_encode($filters)))->groupBy($group_column)->count();
+            $res['totalCount'] = $data->count();
         }
 
         //5) если есть параметр сортировки и нет группировки и фильтра в запросе
@@ -160,8 +160,8 @@ class ApiCategoryController extends Controller
             $sort_column = $sort[0]->selector;
             $sort_operator = ($sort[0]->desc == true) ? 'asc' : 'desc';
             $data = $data->whereRaw($this->JsonToSQL(json_encode($filters)));
-            $res['data'] = $data->orderBy($sort_column, $sort_operator)->get($fields);
-            $res['totalCount'] = $model::all()->count();
+            $res['data'] = $data->whereRaw($this->JsonToSQL(json_encode($filters)))->orderBy($sort_column, $sort_operator)->get($fields);
+            $res['totalCount'] = $data->count();
         }
 
 
@@ -183,8 +183,8 @@ class ApiCategoryController extends Controller
                 $data_group[] = ['key' => $a[$group_column], 'items' => $shops, 'count' => count($shops), 'summary' => [1, 3]];
             }
             $res['data'] = $data_group;
-            $res['groupCount'] = $model::all()->groupBy($group_column)->count();
-            $res['totalCount'] = $model::all()->count();
+            $res['groupCount'] = $data->groupBy($group_column)->count();
+            $res['totalCount'] =  $data->count();
         }
 
 
@@ -207,8 +207,8 @@ class ApiCategoryController extends Controller
                 $data_group[] = ['key' => $a[$group_column], 'items' => $shops, 'count' => count($shops), 'summary' => [1, 3]];
             }
             $res['data'] = $data_group;
-            $res['groupCount'] = $model::all()->groupBy($group_column)->count();
-            $res['totalCount'] = $model::all()->count();
+            $res['groupCount'] = $data->whereRaw($this->JsonToSQL(json_encode($filters)))->groupBy($group_column)->count();
+            $res['totalCount'] =  $data->count();
         }
         return json_encode($res);
     }
@@ -275,7 +275,7 @@ class ApiCategoryController extends Controller
     // все категории для lookup поля в товарах
     public function categories_keys()
     {
-        return Category::where('active',1)->get(['root_id','name'])->toJson();
+        return Category::where('active',1)->orderBy('name')->get(['root_id','name'])->toJson();
     }
 
 }

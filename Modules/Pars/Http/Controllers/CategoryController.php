@@ -234,12 +234,19 @@ class CategoryController extends Controller
 
     }
 
-   //                                                   ///
-  ///////////////////////////// 21 ВЕК ///////////////////
- // обновляем количество товаров в категориях 21 век////
 
+  ///////////////////////////// 21 ВЕК ///////////////////
+
+  /// // парсинг категорий 21 века
+   public function categoriesPars_21(){
+       Category::categoriesPars_21();
+   }
+
+
+ // обновляем количество товаров в категориях 21 век////
     public function updateProductCnt_21(){
         Category::updateProductCnt_21();
     }
+
 
 }

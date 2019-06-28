@@ -190,7 +190,7 @@
         data() {
             return {
 
-                columns: ['id', 'name', 'url'],
+                columns: ['id', 'name', 'url', {dataField:"products_cnt", caption:'Кол-во товаров', width: 100}],
                 statuses: [{
                     'id': 1,
                     'name': 'Активный'

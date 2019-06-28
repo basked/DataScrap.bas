@@ -74,78 +74,11 @@ Route::prefix('pars')->group(function () {
     Route::get('/actcategory/{id}', 'CategoryController@active')->name('CategoryActive');
     Route::get('/check_act_category/{ids}', 'CategoryController@activeCheck')->name('CategoryActiveCheck');
     Route::get('/categories/test', function () {
-        $base_url = 'https://www.21vek.by';
-        $curl = new Curl();
-        $curl->setOpt(CURLOPT_RETURNTRANSFER, TRUE);
-        $curl->setOpt(CURLOPT_SSL_VERIFYPEER, FALSE);
-        if (env('USE_PROXY')) {
-            $curl->setProxy('172.16.15.33', 3128, 'gt-asup6', 'teksab');
-        };
-        $data = $curl->post($base_url);
-        $crawler = new Crawler($data);
-        $categories = [];
-
-        Category::whereShopId(2)->delete();
-        $crawler->filter('#j-nav')->filter('.nav-sub__item.g-grouplinks__item ')->each(function (Crawler $node, $i) use ($categories) {
-
-
-            $categories['data-ga_action'] = trim($node->filter('a')->attr('data-ga_action'));
-            $categories['site_id'] = trim(preg_replace("/[^0-9]/", '', $categories['data-ga_action']));
-            $categories['url'] = str_replace('//','/', str_replace('https://www.21vek.by/','',  trim($node->filter('a')->attr('href'))));
-            $categories['root1'] = trim($node->filter('a')->attr('data-ga_label'));
-            $categories['root2'] = explode('/', $categories['data-ga_action'])[0];
-            $categories['root3'] = trim($node->text());
-            echo '<pre>';
-            print_r($categories);
-            echo '</pre>';
-            // проверка первого уровня категорий
-            if (!Category::where('name', '=', $categories['root1'])->exists()) {
-                $category = new Category();
-                $category->shop_id = 2;
-                $category->name = $categories['root1'];
-                $category->root_id = 0;
-                $category->site_id = 0;
-                $category->url = '';
-                $category->active = true;
-                $category->products_cnt = 0;
-                $category->save();
-                     }
-            // проверка второго уровня категорий
-        if (!Category::where('name', '=', $categories['root2'])->exists()) {
-                $category1 = new Category();
-                $category1->shop_id = 2;
-                $category1->name = $categories['root2'];
-                $root_id=Category::where('name','=',$categories['root1'])->get('id')[0]->id;
-
-                $category1->root_id =  $root_id;
-                $category1->site_id = 0;
-                $category1->url = '';
-                $category1->active = true;
-                $category1->products_cnt = 0;
-                $category1->save();
-            }
-            // проверка третего уровня категорий
-              if (!Category::where('name', '=', $categories['root3'])->exists()) {
-                $category1 = new Category();
-                $category1->shop_id = 2;
-                $category1->name = $categories['root3'];
-                $category1->root_id = Category::where('name', '=', $categories['root2'])->get('id')[0]->id;
-                $category1->site_id = (int)$categories['site_id'];
-                $category1->url = $categories['url'];
-                $category1->active = true;
-                $category1->products_cnt = 0;
-                $category1->save();
-            }
-
-        });
+        //
     }
     );
 
 
-    // 21 век обновить количество товаров в категории
-    // обновить количество товаров в категории
-    Route::get('/categories/update_product_сnt_21','CategoryController@updateProductCnt_21')->name('UpdateProductCnt21');
-    
     
     // Товары
     Route::get('/products', 'ProductController@index')->name('ProductIndex');
@@ -208,6 +141,25 @@ Route::prefix('pars')->group(function () {
 //       $action->products()->attach($product->id);
 
     });
+
+
+    ////////////////////////////////////////////////21 ВЕК НАЧАЛО///////////////////////////////////////////////////
+
+    // парсинг категорий 21 века
+    Route::get('/categories/categories_pars_21','CategoryController@categoriesPars_21')->name('CategoriesPars21');
+
+    // обновить количество товаров в категории
+    Route::get('/categories/update_product_сnt_21','CategoryController@updateProductCnt_21')->name('UpdateProductCnt21');
+
+    // парсинг товаров 21 века
+    Route::get('/products/products_pars_21','ProductController@productsPars_21')->name('ProductsPars_21');
+
+
+
+    /////////////////////////////////////////////////21 ВЕК КОНЕЦ/////////////////////////////////////////////////
+
+
+
 });
 
 

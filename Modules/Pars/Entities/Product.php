@@ -3,6 +3,7 @@
 namespace Modules\Pars\Entities;
 
 use Curl\MultiCurl;
+use http\Exception;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\DB;
 use Symfony\Component\DomCrawler\Crawler;
@@ -36,6 +37,7 @@ use Symfony\Component\DomCrawler\Crawler;
  * @property int $active
  * @method static \Illuminate\Database\Eloquent\Builder|\Modules\Pars\Entities\Product whereActive($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\Modules\Pars\Entities\Product wherePatioCode($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\Modules\Pars\Entities\Product whereSku($value)
  */
 class Product extends Model
 {
@@ -118,7 +120,7 @@ class Product extends Model
                              ];
                          });*/
                         return ['product_id' => trim($data_product->attr('data-id')),
-                            'sku'=>preg_replace("/[^0-9]/", '',   $node->filter('.product-middle-patio-code')->text()),
+                            'sku' => preg_replace("/[^0-9]/", '', $node->filter('.product-middle-patio-code')->text()),
                             'name' => $data_product->attr('data-name'),
                             'brand' => $data_product->attr('data-brand'),
                             'price' => $data_product->attr('data-price'),
@@ -136,8 +138,8 @@ class Product extends Model
                             $np->name = $product['name'];
                             $np->brand = $product['brand'];
                             $np->price = $product['price'];
-                            $np->sku=(int)$product['sku'];
-                            $np->active= 1;
+                            $np->sku = (int)$product['sku'];
+                            $np->active = 1;
                             $np->save();
                             // если нет акции добавляем
                             foreach ($product['actions'] as $act) {
@@ -186,8 +188,8 @@ class Product extends Model
         if (Category::where('site_id', '=', $site_id)->where('active', '=', true)->exists()) {
             $base_url = 'https://5element.by/ajax/catalog_category_list.php?SECTION_ID=';
             $mc = new MultiCurl();
-            if (env('USE_PROXY')){
-                $mc->setProxy('172.16.15.33',3128,'gt-asup6','teksab');
+            if (env('USE_PROXY')) {
+                $mc->setProxy('172.16.15.33', 3128, 'gt-asup6', 'teksab');
             };
             $mc->setTimeout(1200);
             $mc->setConcurrency(20);
@@ -219,7 +221,7 @@ class Product extends Model
                         'price' => $data_product->attr('data-price'),
                         'site_id' => $instance->response->updateSection->section->ID,
                         'root_id' => $instance->response->updateSection->section->UF_IB_RELATED_ID,
-                        'sku'=>preg_replace("/[^0-9]/", '',   $node->filter('.product-middle-patio-code')->text()),
+                        'sku' => preg_replace("/[^0-9]/", '', $node->filter('.product-middle-patio-code')->text()),
                         'actions' => $data_actions
                     ];
                 });
@@ -232,8 +234,8 @@ class Product extends Model
                         $np->name = $product['name'];
                         $np->brand = $product['brand'];
                         $np->price = $product['price'];
-                        $np->sku=$product['sku'];
-                        $np->active=1;
+                        $np->sku = $product['sku'];
+                        $np->active = 1;
                         $np->save();
                         // если нет акции добавляем
                         foreach ($product['actions'] as $act) {
@@ -306,14 +308,88 @@ class Product extends Model
     static public function productsImportToSam()
     {
         //запись о новой вставке
-        DB::connection('mysql_sam')->table('s_pars_main_5')->insert(['act' => 1, 'date' => now(), 'date_end' => now(),'thread'=>0]);
+        DB::connection('mysql_sam')->table('s_pars_main_5')->insert(['act' => 1, 'date' => now(), 'date_end' => now(), 'thread' => 0]);
         $max_main_id = DB::connection('mysql_sam')->table('s_pars_main_5')->max('id');
         // добавляем продукты которых нет SAM
         DB::connection('mysql_sam')->insert('insert into user1111058_sam.s_pars_product_5(category_id,prodId,name,cod) SELECT distinct category_id,prodId,name,cod FROM user1111058_oc_db.s_pars_product_5 WHERE prodid NOT IN (SELECT DISTINCT prodid FROM user1111058_sam.s_pars_product_5)');
         // добавляем акции которых нет SAM
         DB::connection('mysql_sam')->insert('insert into user1111058_sam.s_pars_oplata_5(creditId,name) SELECT distinct careditId,name FROM user1111058_oc_db.s_pars_oplata_5 WHERE careditId NOT IN (SELECT DISTINCT creditId FROM user1111058_sam.s_pars_oplata_5)');
         // добавляем цены
-        DB::connection('mysql_sam')->insert('insert into user1111058_sam.s_pars_cena_5(product_id,cena,oplata_id,main_id) SELECT DISTINCT p.id, oc_db.price, o.id,'.$max_main_id.' FROM user1111058_sam.s_pars_product_5 p, user1111058_sam.s_pars_oplata_5 o, (SELECT DISTINCT a.action_id AS act_action_id, p.product_id AS prod_product_id, p.price FROM user1111058_oc_db.pars_actions a, user1111058_oc_db.pars_products p, user1111058_oc_db.pars_action_product ap WHERE a.id = ap.action_id AND p.id = ap.product_id ORDER BY 2,1) oc_db WHERE p.prodId = oc_db.prod_product_id AND o.creditId = oc_db.act_action_id');
+        DB::connection('mysql_sam')->insert('insert into user1111058_sam.s_pars_cena_5(product_id,cena,oplata_id,main_id) SELECT DISTINCT p.id, oc_db.price, o.id,' . $max_main_id . ' FROM user1111058_sam.s_pars_product_5 p, user1111058_sam.s_pars_oplata_5 o, (SELECT DISTINCT a.action_id AS act_action_id, p.product_id AS prod_product_id, p.price FROM user1111058_oc_db.pars_actions a, user1111058_oc_db.pars_products p, user1111058_oc_db.pars_action_product ap WHERE a.id = ap.action_id AND p.id = ap.product_id ORDER BY 2,1) oc_db WHERE p.prodId = oc_db.prod_product_id AND o.creditId = oc_db.act_action_id');
     }
 
+
+
+
+    //////////////////21 век//////////////
+    ///
+    // парсинг категорий
+    public static function productsPars_21()
+    {
+
+        echo date("H:i:s");
+        $base_url = 'https://www.21vek.by/';
+        ini_set('max_execution_time', 3600);
+
+        $mc = new MultiCurl();
+        if (env('USE_PROXY')) {
+            $mc->setProxy('172.16.15.33', 3128, 'gt-asup6', 'teksab');
+        };
+        $mc->setConcurrency(60);
+        $mc->setTimeout(160);
+        $categories = Category::whereActive(true)->whereShopId(2)->where('products_cnt', '>', 0)->get(['url', 'products_cnt']);
+
+        foreach ($categories as $category) {
+            for ($i = 1; $i <= ceil($category->products_cnt / 60); $i++) {
+                $mc->addGet($base_url . $category->url . 'page:' . $i . '/');
+            }
+        }
+
+        $mc->success(function ($instance) {
+            try {
+                $html = $instance->response;
+                $crawler = new  Crawler($html);
+                $crawler->filter('.g-item-data.j-item-data.j-item-data')->each(function (Crawler $node, $i) {
+                    $products['data-code'] = $node->attr('data-code');
+                    $products['data-name'] = $node->attr('data-name');
+                    $products['data-category'] = $node->attr('data-category');
+                    $products['data-category_id'] = $node->attr('data-category_id');
+                    $products['data-producer_name'] = $node->attr('data-producer_name');
+                    $products['data-price'] = $node->attr('data-price');
+                    $products['data-old_price'] = $node->attr('data-old_price');
+                    // добавлям продукт
+                    if (!Product::whereSku($products['data-code'])->exists()) {
+                        $np = new Product();
+                        $np->category_id = $products['data-category_id'];
+                        $np->product_id = 0;
+                        $np->brand = $products['data-producer_name'];
+                        $np->name = $products['data-name'];
+                        $np->price = $products['data-price'];
+                        $np->sku = $products['data-code'];
+                        $np->active = 1;
+                        $np->save();
+                    }
+//                    echo '<pre>';
+//                    print_r($products);
+//                    echo '</pre>';
+                });
+
+            } catch (Exception $e) {
+                echo 'Выброшено исключение: ', $e->getMessage(), "\n";
+                echo $instance->url;
+            };
+        });
+        $mc->error(function ($instance) {
+            echo 'call to "' . $instance->url . '" was unsuccessful.' . "<br>";
+            echo 'error code: ' . $instance->errorCode . "<br>";
+            echo 'error message: ' . $instance->errorMessage . "<br>";
+        });
+        $mc->complete(function ($instance) {
+            echo 'call to "' . $instance->url . '" completed.' . "<br>";
+        });
+        $mc->start();
+        echo date("H:i:s");
+
+
+    }
 }

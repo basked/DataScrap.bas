@@ -43,7 +43,7 @@ class Category extends Model
 {
     protected $table = 'pars_categories';
     protected $fillable = [];
-   // protected $hidden =['site_id', 'root_id'];
+    // protected $hidden =['site_id', 'root_id'];
 //    protected $visible = ['*'];
 
 
@@ -324,12 +324,86 @@ class Category extends Model
     }
 
 //////////////////////////////////21 век /////////////////////////////////////
-// Функции для работы с 21 веком
-    public static function updateProductCnt_21(){
+////////////////////// Функции для работы с 21 веком//////////////////////////
+
+// парсинг категорий 21 века
+    public static function categoriesPars_21()
+    {
+        $base_url = 'https://www.21vek.by';
+        $curl = new Curl();
+        $curl->setOpt(CURLOPT_RETURNTRANSFER, TRUE);
+        $curl->setOpt(CURLOPT_SSL_VERIFYPEER, FALSE);
+        if (env('USE_PROXY')) {
+            $curl->setProxy('172.16.15.33', 3128, 'gt-asup6', 'teksab');
+        };
+        $data = $curl->post($base_url);
+        $crawler = new Crawler($data);
+        $categories = [];
+
+        Category::whereShopId(2)->delete();
+        $crawler->filter('#j-nav')->filter('.nav-sub__item.g-grouplinks__item ')->each(function (Crawler $node, $i) use ($categories) {
+
+
+            $categories['data-ga_action'] = trim($node->filter('a')->attr('data-ga_action'));
+            $categories['site_id'] = trim(preg_replace("/[^0-9]/", '', $categories['data-ga_action']));
+            $categories['url'] = str_replace('//', '/', str_replace('https://www.21vek.by/', '', trim($node->filter('a')->attr('href'))));
+            $categories['root1'] = trim($node->filter('a')->attr('data-ga_label'));
+            $categories['root2'] = explode('/', $categories['data-ga_action'])[0];
+            $categories['root3'] = trim($node->text());
+            echo '<pre>';
+            print_r($categories);
+            echo '</pre>';
+            // проверка первого уровня категорий
+            if (!Category::where('name', '=', $categories['root1'])->exists()) {
+                $category = new Category();
+                $category->shop_id = 2;
+                $category->name = $categories['root1'];
+                $category->root_id = 0;
+                $category->site_id = 0;
+                $category->url = '';
+                $category->active = true;
+                $category->products_cnt = 0;
+                $category->save();
+            }
+            // проверка второго уровня категорий
+            if (!Category::where('name', '=', $categories['root2'])->exists()) {
+                $category1 = new Category();
+                $category1->shop_id = 2;
+                $category1->name = $categories['root2'];
+                $root_id = Category::where('name', '=', $categories['root1'])->get('id')[0]->id;
+
+                $category1->root_id = $root_id;
+                $category1->site_id = 0;
+                $category1->url = '';
+                $category1->active = true;
+                $category1->products_cnt = 0;
+                $category1->save();
+            }
+            // проверка третего уровня категорий
+            if (!Category::where('name', '=', $categories['root3'])->exists()) {
+                $category1 = new Category();
+                $category1->shop_id = 2;
+                $category1->name = $categories['root3'];
+                $category1->root_id = Category::where('name', '=', $categories['root2'])->get('id')[0]->id;
+                $category1->site_id = (int)$categories['site_id'];
+                $category1->url = $categories['url'];
+                $category1->active = true;
+                $category1->products_cnt = 0;
+                $category1->save();
+            }
+        });
+    }
+
+
+// обновление кол-ва товаров в катгории
+    public static function updateProductCnt_21()
+    {
         echo date("H:i:s");
-        $base_url='https://www.21vek.by/';
+        $base_url = 'https://www.21vek.by/';
         ini_set('max_execution_time', 720);
-        $categories= Category::whereShopId(2)->whereActive(true)->where('url','!=','')->get(['id','name','url']);
+//        $categories= Category::whereShopId(2)->whereActive(true)->where('url','!=','')->get(['id','name','url']);
+        $categories = Category::whereShopId(2)->whereActive(true)->where('url', '!=', '')->get(['id', 'name', 'url']);
+
         $mc = new MultiCurl();
         if (env('USE_PROXY')) {
             $mc->setProxy('172.16.15.33', 3128, 'gt-asup6', 'teksab');
@@ -337,19 +411,19 @@ class Category extends Model
         $mc->setConcurrency(60);
         $mc->setTimeout(160);
         foreach ($categories as $category) {
-            $mc->addGet($base_url.$category->url);
+            $mc->addGet($base_url . $category->url);
         }
         $mc->success(function ($instance) {
             try {
                 $html = $instance->response;
                 $crawler = new DomCrawler\Crawler($html);
                 $cnt = (int)trim(explode('из', $crawler->filter('.cr-paginator_page_list')->text())[1]);
-                $cat = Category::where('url',str_replace('https://www.21vek.by/','', $instance->url))->first();
+                $cat = Category::where('url', str_replace('https://www.21vek.by/', '', $instance->url))->first();
                 $cat->products_cnt = $cnt;
                 $cat->save();
             } catch (Exception $e) {
                 echo 'Выброшено исключение: ', $e->getMessage(), "\n";
-                echo  $instance->url;
+                echo $instance->url;
             };
         });
         $mc->error(function ($instance) {

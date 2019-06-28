@@ -131,5 +131,14 @@ class ProductController extends Controller
         Product::productsImportToSam();
         //return redirect('pars/categories');
     }
+  ////////////////////////21 век ////////////////////////////////
+    // парсинг данных
+    public function productsPars_21()
+    {
+        Product::productsPars_21();
+    }
+
+
+
 
 }

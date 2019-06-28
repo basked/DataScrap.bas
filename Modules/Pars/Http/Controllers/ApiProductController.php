@@ -105,7 +105,7 @@ class ApiProductController extends Controller
         //1) только при обычном отображении таблицы
         if (!$sort && !$group && !$filters) {
             $res['data'] = $data->get($fields);
-            $res['totalCount'] = $model::all()->count();
+            $res['totalCount'] = $data->count();
         }
 
         //2) только поиск
@@ -131,8 +131,8 @@ class ApiProductController extends Controller
                 $data_group[] = ['key' => $a[$group_column], 'items' => $shops, 'count' => count($shops), 'summary' => [1, 3]];
             }
             $res['data'] = $data_group;
-            $res['groupCount'] = $model::all()->groupBy($group_column)->count();
-            $res['totalCount'] = $model::all()->count();
+            $res['groupCount'] = $data->groupBy($group_column)->count();
+            $res['totalCount'] = $data->count();
         }
 
         //4) если есть параметр групировки и сортировки нет фильтрации в запросе
@@ -152,8 +152,8 @@ class ApiProductController extends Controller
                 $data_group[] = ['key' => $a[$group_column], 'items' => $shops, 'count' => count($shops), 'summary' => [1, 3]];
             }
             $res['data'] = $data_group;
-            $res['groupCount'] = $model::all()->groupBy($group_column)->count();
-            $res['totalCount'] = $model::all()->count();
+            $res['groupCount'] = $data->groupBy($group_column)->count();
+            $res['totalCount'] = $data->count();
         }
 
         //5) если есть параметр сортировки и нет группировки и фильтра в запросе
@@ -171,7 +171,7 @@ class ApiProductController extends Controller
             $sort_operator = ($sort[0]->desc == true) ? 'asc' : 'desc';
             $data = $data->whereRaw($this->JsonToSQL(json_encode($filters)));
             $res['data'] = $data->orderBy($sort_column, $sort_operator)->get($fields);
-            $res['totalCount'] = $model::all()->count();
+            $res['totalCount'] = $data->count();
         }
 
 
@@ -193,8 +193,8 @@ class ApiProductController extends Controller
                 $data_group[] = ['key' => $a[$group_column], 'items' => $shops, 'count' => count($shops), 'summary' => [1, 3]];
             }
             $res['data'] = $data_group;
-            $res['groupCount'] = $model::all()->groupBy($group_column)->count();
-            $res['totalCount'] = $model::all()->count();
+            $res['groupCount'] = $data->groupBy($group_column)->count();
+            $res['totalCount'] = $data->count();
         }
 
 
@@ -217,8 +217,8 @@ class ApiProductController extends Controller
                 $data_group[] = ['key' => $a[$group_column], 'items' => $shops, 'count' => count($shops), 'summary' => [1, 3]];
             }
             $res['data'] = $data_group;
-            $res['groupCount'] = $model::all()->groupBy($group_column)->count();
-            $res['totalCount'] = $model::all()->count();
+            $res['groupCount'] = $data->groupBy($group_column)->count();
+            $res['totalCount'] = $data->count();
         }
         return json_encode($res);
     }
