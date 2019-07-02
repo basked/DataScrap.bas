@@ -55,12 +55,22 @@
                         widget: 'dxButton',
                         locateInMenu: 'auto',
 
-                        options: {
-                            icon: 'refresh',
-
+                        options:{
+                            type: 'back',
+                            icon: 'repeat',
+                            hint: 'Спарсить повторно данные',
+                            text: 'Back',
                             onClick: (e) => {
-                                console.log(e);
-                                notify(e.itemData + 'Refresh button has been clicked!')
+                                this.loadIndicatorVisible = true;
+                                notify('Повторный парсинг данных запущен!')
+                                setTimeout(() => {
+                                    this.loadIndicatorVisible = false;
+                                }, 360000);
+
+                                return axios.get(route('ProdСategoriesNullPars'))
+                                    .then((response) => {
+                                        return response.data;
+                                    });
                             }
                         }
                     }

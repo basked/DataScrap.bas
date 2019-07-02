@@ -112,8 +112,8 @@ class ProductController extends Controller
 
     public function categoriesPars()
     {
-        Product::truncate();
-        Action::truncate();
+     //   Product::whereCategoryId() ;
+     //   Action::truncate();
         DB::table('pars_action_product')->truncate();
        // Category::updateProductCnt();
         Product::categoriesPars();
