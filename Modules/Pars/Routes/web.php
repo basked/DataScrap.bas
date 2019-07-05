@@ -59,13 +59,17 @@ Route::prefix('pars')->group(function () {
 
 
     Route::get('/categories', 'CategoryController@index')->name('CategoryIndex');
+    Route::get('/categories/{id}', 'CategoryController@show')->name('CategoryShow');
+    Route::get('/category', 'CategoryController@create')->name('CategoryCreate');
+    Route::post('/category', 'CategoryController@store')->name('CategoryStore');
+    Route::delete('/category/{id}', 'CategoryController@destroy')->name('CategoryDestroy');
     Route::get('/categories_products', 'CategoryController@categoriesProducts')->name('CategoriesProducts');
 
 
     Route::get('/catsshop', 'CategoryController@categoriesForShop')->name('CategoriesForShop');
-    Route::get('/category', 'CategoryController@create')->name('CategoryCreate');
-    Route::post('/category', 'CategoryController@store')->name('CategoryStore');
-    Route::delete('/category/{id}', 'CategoryController@destroy')->name('CategoryDestroy');
+
+
+
     // парсинг категорий
     Route::get('categories/pars', 'CategoryController@parsCategories')->name('CategoriesPars');
     Route::get('categories/updateProductsCnt', 'CategoryController@CategoriesUpdate')->name('CategoriesUpdate');;

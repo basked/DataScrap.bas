@@ -55,7 +55,7 @@
                         widget: 'dxButton',
                         locateInMenu: 'auto',
 
-                        options:{
+                        options: {
                             type: 'back',
                             icon: 'repeat',
                             hint: 'Спарсить повторно данные',
@@ -73,8 +73,7 @@
                                     });
                             }
                         }
-                    }
-                    ,
+                    },
                     {
                         location: 'center',
                         widget: 'dxSelectBox',
@@ -85,6 +84,7 @@
                             onItemClick: (e) => {
                                 // console.log(e);
                                 notify(e.itemData + ' Center button has been clicked!');
+                                location.href = route('CategoryIndex');
                             }
                         }
                     }
@@ -92,7 +92,7 @@
             }
         },
         methods: {
-            route: route
+            route: route,
         }
     }
 </script>

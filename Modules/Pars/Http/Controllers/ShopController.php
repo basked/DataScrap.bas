@@ -60,7 +60,10 @@ class ShopController extends Controller
      */
     public function show($id)
     {
-        return view('pars::show');
+        $shops = Shop::whereId($id)->orderBy('created_at', 'asc')->get();
+        return view('pars::shops.show', [
+            'shops' => $shops
+        ]);
     }
 
     /**

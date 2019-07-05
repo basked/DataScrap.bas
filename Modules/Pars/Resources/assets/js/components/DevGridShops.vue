@@ -7,6 +7,7 @@
                 :show-borders="true"
                 :allow-column-resizing="true"
                 :allow-column-reordering="true"
+                @context-menu-preparing="addMenuItems"
         >
             <dx-column
                     data-field="active"
@@ -160,10 +161,11 @@
             DxFilterRow,
             DxHeaderFilter
         },
+        props: ['homeRoute'],
         data() {
             return {
 
-                columns: ['id', 'name', 'url'],
+                columns: [{dataField: "id", caption: 'Код на сайте', width: 100, visible: false}, 'name', 'url'],
                 statuses: [{
                     "id": 1,
                     "name": "Активный"
@@ -190,6 +192,41 @@
                 selectTextOnEditStart: true,
                 startEditAction: 'click'
             };
+        },
+        methods: {
+            route: route,
+            addMenuItems(e) {
+                console.log(e.target);
+
+                // добавим меню при вызове из header
+                if (e.target == 'header') {
+                    // e.items can be undefined
+                    if (!e.items) e.items = [];
+
+                    // Add a custom menu item
+                    e.items.push({
+                        text: 'Log Column Caption',
+                        onItemClick: () => {
+                            console.log(e.column.caption);
+                        }
+                    });
+                }
+
+                if (e.target == 'content') {
+                    // e.items can be undefined
+                    if (!e.items) e.items = [];
+                    console.log(e);
+                    // Add a custom menu item
+                    e.items.push({
+                        text: 'Перейти к категориям',
+                        onItemClick: () => {
+                            //  console.log(e.row);
+                            // console.log(e.column.caption);
+                            location.href = route('CategoryShow', e.row.key.id);
+                        }
+                    });
+                }
+            }
         }
     };
 </script>
