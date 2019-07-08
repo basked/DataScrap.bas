@@ -242,11 +242,15 @@ class CategoryController extends Controller
        Category::categoriesPars_21();
    }
 
-
- // обновляем количество товаров в категориях 21 век////
+// обновляем количество товаров в категориях 21 век////
     public function updateProductCnt_21(){
         Category::updateProductCnt_21();
     }
 
 
+// максимаольное кол-во в категории и в магазине
+    public function maxProductCategory($shop_id=0, $category_id=0){
+        //dd($shop_id,$category_id);
+        Category::maxProductCategory($shop_id, $category_id );
+    }
 }

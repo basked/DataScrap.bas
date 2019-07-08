@@ -57,17 +57,15 @@ Route::prefix('pars')->group(function () {
     Route::delete('/shop/{id}', 'ShopController@destroy')->name('ShopDestroy');
     Route::get('/shops/test', 'ShopController@test')->name('ShopTest');
 
-
+    // категории 5 элемента
     Route::get('/categories', 'CategoryController@index')->name('CategoryIndex');
     Route::get('/categories/{id}', 'CategoryController@show')->name('CategoryShow');
     Route::get('/category', 'CategoryController@create')->name('CategoryCreate');
     Route::post('/category', 'CategoryController@store')->name('CategoryStore');
     Route::delete('/category/{id}', 'CategoryController@destroy')->name('CategoryDestroy');
     Route::get('/categories_products', 'CategoryController@categoriesProducts')->name('CategoriesProducts');
-
-
+    Route::get('/categories_max_product_category/{shop_id}/{category_id}', 'CategoryController@maxProductCategory')->name('MaxProductCategory');
     Route::get('/catsshop', 'CategoryController@categoriesForShop')->name('CategoriesForShop');
-
 
 
     // парсинг категорий
@@ -82,8 +80,6 @@ Route::prefix('pars')->group(function () {
     }
     );
 
-
-    
     // Товары
     Route::get('/products', 'ProductController@index')->name('ProductIndex');
     Route::get('/products/pars', 'ProductController@productsPars')->name('ProductsPars');
@@ -91,6 +87,8 @@ Route::prefix('pars')->group(function () {
     Route::get('/products/categories_pars', 'ProductController@categoriesPars')->name('ProdСategoriesPars');
     Route::get('/products/categories_null_pars', 'ProductController@categoriesNullPars')->name('ProdСategoriesNullPars');
     Route::get('/products/products_import_to_sam', 'ProductController@productsImportToSam')->name('ProdImportToSam');
+    Route::get('/products/cnt_in_category/{category_id}', 'ProductController@productCntInCategory')->name('ProductCntInCategory');
+
 
     Route::get('/products/test', function () {
 
@@ -150,18 +148,16 @@ Route::prefix('pars')->group(function () {
     ////////////////////////////////////////////////21 ВЕК НАЧАЛО///////////////////////////////////////////////////
 
     // парсинг категорий 21 века
-    Route::get('/categories/categories_pars_21','CategoryController@categoriesPars_21')->name('CategoriesPars21');
+    Route::get('/categories/categories_pars_21', 'CategoryController@categoriesPars_21')->name('CategoriesPars21');
 
     // обновить количество товаров в категории
-    Route::get('/categories/update_product_сnt_21','CategoryController@updateProductCnt_21')->name('UpdateProductCnt21');
+    Route::get('/categories/update_product_сnt_21', 'CategoryController@updateProductCnt_21')->name('UpdateProductCnt21');
 
     // парсинг товаров 21 века
-    Route::get('/products/products_pars_21','ProductController@productsPars_21')->name('ProductsPars_21');
-
+    Route::get('/products/products_pars_21', 'ProductController@productsPars_21')->name('ProductsPars_21');
 
 
     /////////////////////////////////////////////////21 ВЕК КОНЕЦ/////////////////////////////////////////////////
-
 
 
 });

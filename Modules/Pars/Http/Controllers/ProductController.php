@@ -140,6 +140,11 @@ class ProductController extends Controller
     }
 
 
+// ОБЩИЕ ФУНКЦИИ ДЛЯ ВСЕХ МАГАЗИНОВ
+// максимаольное кол-во в категории и в магазине
+    public static function productCntInCategory($shop_id = 0){
+        Product::productCntInCategory($shop_id);
+    }
 
 
 }

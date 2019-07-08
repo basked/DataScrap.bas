@@ -392,4 +392,15 @@ class Product extends Model
 
 
     }
+
+
+// ОБЩИЕ ФУНКЦИИ ДЛЯ ВСЕХ МАГАЗИНОВ
+// максимаольное кол-во в категории и в магазине
+    public static function productCntInCategory($category_id = 0)
+    {
+      //  dd($category_id);
+        if ($category_id != 0) {
+            echo Product::whereCategoryId($category_id)->whereActive(true)->count();
+        }
+    }
 }

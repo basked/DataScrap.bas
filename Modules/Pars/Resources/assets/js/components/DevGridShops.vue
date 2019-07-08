@@ -1,5 +1,9 @@
 <template>
     <div id="data-grid-shops">
+        <bas-pop-up
+                :show-info="showInfo"
+        >
+        </bas-pop-up>
         <dx-data-grid
                 :data-source="dataSource"
                 :remote-operations="remoteOperations"
@@ -21,6 +25,12 @@
                         display-expr="name"
                 />
             </dx-column>
+            <dx-column
+                    caption="Операции"
+                    :width="110"
+                    :buttons="editButtons"
+                    type="buttons"
+            />
             <dx-editing
                     :select-text-on-edit-start="selectTextOnEditStart"
                     :start-edit-action="startEditAction"
@@ -164,8 +174,55 @@
         props: ['homeRoute'],
         data() {
             return {
+                // для popup
+                shops : [{
+                    'ID': 7,
+                    'FirstName': 'Sandra',
+                    'LastName': 'Johnson',
+                    'Prefix': 'Mrs.',
+                    'Position': 'Controller',
+                    'Picture': 'images/employees/06.png',
+                    'BirthDate': '1974/11/15',
+                    'HireDate': '2005/05/11',
+                    'Notes': "Sandra is a CPA and has been our controller since 2008. She loves to interact with staff so if you've not met her, be certain to say hi.\r\n\r\nSandra has 2 daughters both of whom are accomplished gymnasts.",
+                    'Address': '4600 N Virginia Rd.'
+                }, {
+                    'ID': 10,
+                    'FirstName': 'Kevin',
+                    'LastName': 'Carter',
+                    'Prefix': 'Mr.',
+                    'Position': 'Shipping Manager',
+                    'Picture': 'images/employees/07.png',
+                    'BirthDate': '1978/01/09',
+                    'HireDate': '2009/08/11',
+                    'Notes': 'Kevin is our hard-working shipping manager and has been helping that department work like clockwork for 18 months.\r\n\r\nWhen not in the office, he is usually on the basketball court playing pick-up games.',
+                    'Address': '424 N Main St.'
+                }],
 
-                columns: [{dataField: "id", caption: 'Код на сайте', width: 100, visible: false}, 'name', 'url'],
+                popupVisible: true,
+
+                // кнопки для грида
+                editButtons: ['edit', 'delete', {
+                    caption: 'Операции',
+                    hint: 'Обновить данные',
+                    icon: 'repeat',
+                    onClick: this.updateProductsCnt
+                }],
+                // столбцы
+
+                columns: [{
+                    dataField: "id", caption: 'Код на сайте',
+                    width: 150,
+                    visible: false
+                }, {
+                    width: 400,
+                    dataField: 'name',
+                    caption: 'Наименование'
+                }, {
+                    dataField: 'url',
+                    caption: 'Url',
+                    width: 400
+                }],
                 statuses: [{
                     "id": 1,
                     "name": "Активный"
@@ -195,6 +252,15 @@
         },
         methods: {
             route: route,
+            showInfo() {
+                this.popupVisible = true;
+                console.log('basket');
+            },
+            updateProductsCnt() {
+               this.popupVisible=true;
+               this.showInfo();
+
+            },
             addMenuItems(e) {
                 console.log(e.target);
 
@@ -211,7 +277,6 @@
                         }
                     });
                 }
-
                 if (e.target == 'content') {
                     // e.items can be undefined
                     if (!e.items) e.items = [];
@@ -221,7 +286,6 @@
                         text: 'Перейти к категориям',
                         onItemClick: () => {
                             //  console.log(e.row);
-                            // console.log(e.column.caption);
                             location.href = route('CategoryShow', e.row.key.id);
                         }
                     });
