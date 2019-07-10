@@ -13,8 +13,8 @@
             <dx-scroll-view >
                 <ul>
                     <li v-for="category in categories">
-                        <p> Id={{category.category_id }}, Name={{category.name}}, AllCnt={{category.all_cnt}}, CurrentCnt={{category.curr_cnt}} </p>
-                        <p><bas-progress-bar :propsMaxValue=category.all_cnt></bas-progress-bar>  </p>
+                        <!--<p> Id={{category.category_id }}, Name={{category.name}}, MaxCnt={{category.max_cnt}}, CurrentCnt={{category.curr_cnt}} </p>-->
+                        <p><bas-progress-bar2 :propsMaxCnt=category.max_cnt :propsName=category.name :propsCategoryId=category.category_id > </bas-progress-bar2>  </p>
                     </li>
 
                     <!--<li> <bas-progress-bar :propsMaxValue="500"></bas-progress-bar>  </li>-->
@@ -279,10 +279,12 @@
         methods: {
             route: route,
             updateProductsCnt() {
-                 axios.get(`api/categories_active_cnt/1`).then(response => {
+            axios.get(route('ProdСategoriesPars'));
+              axios.get(`api/categories_active_cnt/1`).then(response => {
                   this.categories=response.data
                 });
                 this.popupVisible = true;
+                console.log('updateProductsCnt');
             },
             addMenuItems(e) {
                 console.log(e.target);

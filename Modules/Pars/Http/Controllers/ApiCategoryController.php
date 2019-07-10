@@ -223,7 +223,7 @@ class ApiCategoryController extends Controller
         foreach ($categories as $category) {
             $r['category_id'] = $category->root_id;
             $r['name'] = $category->name;
-            $r['all_cnt'] = $category->products_cnt;
+            $r['max_cnt'] = $category->products_cnt;
             $r['curr_cnt'] = Product::whereCategoryId($category->root_id)->whereActive(true)->count();
             $res[] = $r;
         }

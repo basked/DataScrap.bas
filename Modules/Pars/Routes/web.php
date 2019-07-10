@@ -43,8 +43,10 @@ Route::prefix('pars')->group(function () {
     Route::get('api/categories_active_cnt/{shop_id}', 'ApiCategoryController@activeCategoryCnt');
 
 
+
     // Product API
     Route::get('/api/products/{patams?}', 'ApiProductController@index');
+    Route::get('/api/products_category_cnt/{category_id}', 'ApiProductController@categoryCnt');
     Route::post('/api/products_insert', 'ApiProductController@store');
     Route::put('/api/products_update/{id}', 'ApiProductController@update');
     Route::delete('/api/products_delete/{id}', 'ApiProductController@destroy');

@@ -54,24 +54,21 @@ class ApiProductController extends Controller
         $patterns[10] = '/\]/u';
 
 
-
 //
 
         $replacements = array();
 
-        $replacements[0]='($1';
-        $replacements[1]=' $1 ';
-        $replacements[2]=' like \'%$1%\'';
-        $replacements[3]=' not like \'%$1%\'';
-        $replacements[4]=' like \'%$1\'';
-        $replacements[5]=' like \'$1%\'';
-        $replacements[6]=' $1 \'$2\'';
-        $replacements[7]=' $1 $2';
-        $replacements[8]=' is null ';
-        $replacements[9]='(';
-        $replacements[10]=')';
-
-
+        $replacements[0] = '($1';
+        $replacements[1] = ' $1 ';
+        $replacements[2] = ' like \'%$1%\'';
+        $replacements[3] = ' not like \'%$1%\'';
+        $replacements[4] = ' like \'%$1\'';
+        $replacements[5] = ' like \'$1%\'';
+        $replacements[6] = ' $1 \'$2\'';
+        $replacements[7] = ' $1 $2';
+        $replacements[8] = ' is null ';
+        $replacements[9] = '(';
+        $replacements[10] = ')';
 
 
         return preg_replace($patterns, $replacements, $string);
@@ -83,7 +80,7 @@ class ApiProductController extends Controller
     {
 
         $model = Product::class;
-        $fields = ['id','category_id','sku', 'product_id', 'brand', 'name', 'price', 'active'];
+        $fields = ['id', 'category_id', 'sku', 'product_id', 'brand', 'name', 'price', 'active'];
 
         $res = [];
         $skip = $request->skip;
@@ -100,7 +97,7 @@ class ApiProductController extends Controller
         $data = Product::with('category')->take($take)->skip($skip);
         // $data = Product::whereId(1)->with('category')->get(['name','category']);
 
-      //  dd($data);
+        //  dd($data);
 
         //1) только при обычном отображении таблицы
         if (!$sort && !$group && !$filters) {
@@ -119,7 +116,7 @@ class ApiProductController extends Controller
         if (!$sort && $group && !$filters) {
             $data_group = [];
             $group_column = $group[0]->selector;
-            if ( array_key_exists('desc',(array)$group[0])){
+            if (array_key_exists('desc', (array)$group[0])) {
                 $group_operator = ($group[0]->desc == true) ? 'asc' : 'desc';
             } else {
                 $group_operator = 'asc';
@@ -139,7 +136,7 @@ class ApiProductController extends Controller
         if (!$sort && $group && $filters) {
             $data_group = [];
             $group_column = $group[0]->selector;
-            if ( array_key_exists('desc',(array)$group[0])){
+            if (array_key_exists('desc', (array)$group[0])) {
                 $group_operator = ($group[0]->desc == true) ? 'asc' : 'desc';
             } else {
                 $group_operator = 'asc';
@@ -179,7 +176,7 @@ class ApiProductController extends Controller
         if ($sort && $group && !$filters) {
             $data_group = [];
             $group_column = $group[0]->selector;
-            if ( array_key_exists('desc',(array)$group[0])){
+            if (array_key_exists('desc', (array)$group[0])) {
                 $group_operator = ($group[0]->desc == true) ? 'asc' : 'desc';
             } else {
                 $group_operator = 'asc';
@@ -202,7 +199,7 @@ class ApiProductController extends Controller
         if ($sort && $group && $filters) {
             $data_group = [];
             $group_column = $group[0]->selector;
-            if ( array_key_exists('desc',(array)$group[0])){
+            if (array_key_exists('desc', (array)$group[0])) {
                 $group_operator = ($group[0]->desc == true) ? 'asc' : 'desc';
             } else {
                 $group_operator = 'asc';
@@ -299,4 +296,10 @@ class ApiProductController extends Controller
         $shop = Shop::findOrFail($id);
         $shop->delete();
     }
+
+    public function categoryCnt($category_id)
+    {
+        return Product::whereActive(true)->whereCategoryId($category_id)->count();
+    }
+
 }
