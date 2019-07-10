@@ -39,6 +39,8 @@ Route::prefix('pars')->group(function () {
     Route::put('/api/categories_update/{id}', 'ApiCategoryController@update');
     Route::delete('/api/categories_delete/{id}', 'ApiCategoryController@destroy');
     Route::get('api/categories_keys/', 'ApiCategoryController@categories_keys');
+    Route::get('api/categories_max_cur_cnt/{shop_id}/{category_id}', 'ApiCategoryController@MaxCurCnt');
+    Route::get('api/categories_active_cnt/{shop_id}', 'ApiCategoryController@activeCategoryCnt');
 
 
     // Product API

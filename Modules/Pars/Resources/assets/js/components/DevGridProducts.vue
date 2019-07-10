@@ -1,7 +1,6 @@
 <template>
     <div id="data-grid-products">
         <bas-tool-bar></bas-tool-bar>
-
              <dx-data-grid
                 :data-source="dataSource"
                 :remote-operations="remoteOperations"
@@ -30,7 +29,6 @@
                     :allow-adding="true"
                     :allow-deleting="true"
                     mode="batch"/>
-
             <dx-search-panel
                     :visible="true"
                     :highlight-case-sensitive="true"

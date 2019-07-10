@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Routing\Controller;
 use Modules\Pars\Entities\Category;
+use Modules\Pars\Entities\Product;
 
 class ApiCategoryController extends Controller
 {
@@ -77,7 +78,7 @@ class ApiCategoryController extends Controller
     {
 
         $model = Category::class;
-        $fields = ['id', 'name','shop_id', 'url','products_cnt', 'active', 'created_at'];
+        $fields = ['id', 'name', 'shop_id', 'url', 'products_cnt', 'active', 'created_at'];
 
         $res = [];
         $skip = $request->skip;
@@ -184,7 +185,7 @@ class ApiCategoryController extends Controller
             }
             $res['data'] = $data_group;
             $res['groupCount'] = $data->groupBy($group_column)->count();
-            $res['totalCount'] =  $data->count();
+            $res['totalCount'] = $data->count();
         }
 
 
@@ -208,10 +209,38 @@ class ApiCategoryController extends Controller
             }
             $res['data'] = $data_group;
             $res['groupCount'] = $data->whereRaw($this->JsonToSQL(json_encode($filters)))->groupBy($group_column)->count();
-            $res['totalCount'] =  $data->count();
+            $res['totalCount'] = $data->count();
         }
         return json_encode($res);
     }
+    // все активные категории с количеством
+    public function activeCategoryCnt($shop_id = 0)
+    {
+        $res = [];
+        $r = [];
+        $categories = Category::whereShopId($shop_id)->whereActive(true)->get(['id', 'name', 'root_id', 'products_cnt']);
+        // dd($categories);
+        foreach ($categories as $category) {
+            $r['category_id'] = $category->root_id;
+            $r['name'] = $category->name;
+            $r['all_cnt'] = $category->products_cnt;
+            $r['curr_cnt'] = Product::whereCategoryId($category->root_id)->whereActive(true)->count();
+            $res[] = $r;
+        }
+        return $res;
+    }
+
+    public function MaxCurCnt($shop_id = 0, $category_id = 0)
+    {
+        $res = [];
+        $res['shop_id'] = $shop_id;
+        $res['category_id'] = Category::whereShopId($category_id)->whereShopId($shop_id)->whereActive(true)->value('root_id');
+        $res['name'] = Category::whereRootId($category_id)->whereShopId($shop_id)->whereActive(true)->value('name');
+        $res['maxCnt'] = Category::whereRootId($category_id)->whereShopId($shop_id)->whereActive(true)->value('products_cnt');
+        $res['currCnt'] = Product::whereCategoryId($res['category_id'])->whereActive(true)->count();
+        return json_encode($res);
+    }
+
 
     /**
      * Show the form for creating a new resource.
@@ -272,10 +301,11 @@ class ApiCategoryController extends Controller
     {
         //
     }
+
     // все категории для lookup поля в товарах
     public function categories_keys()
     {
-        return Category::where('active',1)->orderBy('name')->get(['root_id','name'])->toJson();
+        return Category::where('active', 1)->orderBy('name')->get(['root_id', 'name'])->toJson();
     }
 
 }

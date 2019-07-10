@@ -1,9 +1,29 @@
 <template>
     <div id="data-grid-shops">
-        <bas-pop-up
-                :show-info="showInfo"
+        <dx-popup
+                :visible.sync="popupVisible"
+                :drag-enabled="false"
+                :close-on-outside-click="true"
+                :show-title="true"
+                :width="600"
+                :height="550"
+                class="popup"
+                title="Категории для парсинга"
         >
-        </bas-pop-up>
+            <dx-scroll-view >
+                <ul>
+                    <li v-for="category in categories">
+                        <p> Id={{category.category_id }}, Name={{category.name}}, AllCnt={{category.all_cnt}}, CurrentCnt={{category.curr_cnt}} </p>
+                        <p><bas-progress-bar :propsMaxValue=category.all_cnt></bas-progress-bar>  </p>
+                    </li>
+
+                    <!--<li> <bas-progress-bar :propsMaxValue="500"></bas-progress-bar>  </li>-->
+                    <!--<li> <bas-progress-bar :propsMaxValue="300"></bas-progress-bar>  </li>-->
+
+               </ul>
+            </dx-scroll-view>
+        </dx-popup>
+
         <dx-data-grid
                 :data-source="dataSource"
                 :remote-operations="remoteOperations"
@@ -77,7 +97,7 @@
 </template>
 <script>
 
-    import {DxCheckBox, DxSelectBox} from 'devextreme-vue';
+    import {DxScrollView, DxProgressBar , DxCheckBox, DxSelectBox} from 'devextreme-vue';
     import {
         DxDataGrid,
         DxColumn,
@@ -95,6 +115,7 @@
     import {DxSwitch} from 'devextreme-vue/switch';
     import CustomStore from 'devextreme/data/custom_store';
     import 'whatwg-fetch';
+    import {DxPopup} from 'devextreme-vue/popup';
 
     function handleErrors(response) {
         if (!response.ok)
@@ -105,6 +126,7 @@
     function isNotEmpty(value) {
         return value !== undefined && value !== null && value !== "";
     }
+
 
     const gridDataSource = {
         store: new CustomStore({
@@ -155,6 +177,9 @@
     };
     export default {
         components: {
+            DxProgressBar,
+            DxScrollView,
+            DxPopup,
             DxSwitch,
             DxDataGrid,
             DxEditing,
@@ -174,8 +199,9 @@
         props: ['homeRoute'],
         data() {
             return {
+                categories:[],
                 // для popup
-                shops : [{
+                shops: [{
                     'ID': 7,
                     'FirstName': 'Sandra',
                     'LastName': 'Johnson',
@@ -199,7 +225,7 @@
                     'Address': '424 N Main St.'
                 }],
 
-                popupVisible: true,
+                popupVisible: false,
 
                 // кнопки для грида
                 editButtons: ['edit', 'delete', {
@@ -252,14 +278,11 @@
         },
         methods: {
             route: route,
-            showInfo() {
-                this.popupVisible = true;
-                console.log('basket');
-            },
             updateProductsCnt() {
-               this.popupVisible=true;
-               this.showInfo();
-
+                 axios.get(`api/categories_active_cnt/1`).then(response => {
+                  this.categories=response.data
+                });
+                this.popupVisible = true;
             },
             addMenuItems(e) {
                 console.log(e.target);

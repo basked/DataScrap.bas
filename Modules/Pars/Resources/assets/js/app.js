@@ -49,8 +49,7 @@ Vue.component('dev-grid-shops', require('./components/DevGridShops.vue').default
 Vue.component('dev-grid-categories', require('./components/DevGridCategories.vue').default);
 Vue.component('dev-grid-products', require('./components/DevGridProducts.vue').default);
 Vue.component('bas-tool-bar', require('./components/BasToolBar.vue').default);
-Vue.component('bas-pop-up', require('./components/BasPopUp.vue').default);
-
+Vue.component('bas-progress-bar', require('./components/BasProgressBar.vue').default);
 
 
 
