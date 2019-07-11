@@ -101,13 +101,13 @@
                         this.seconds = maxValue;
                     }
 
-                    this.intervalId = setInterval(() => this.timer(), 20000);
+                    this.intervalId = setInterval(() => this.timer(), 5000);
                 }
                 this.inProgress = !this.inProgress;
             },
             timer() {
                 this.seconds = this.seconds + 5;
-                if ((this.categoryCurrCnt==this.categoryMaxCnt)|| (this.seconds==20)){
+                if (this.categoryCurrCnt==this.categoryMaxCnt){
 
                     this.buttonText = 'Restart progress';
                     this.inProgress = !this.inProgress;

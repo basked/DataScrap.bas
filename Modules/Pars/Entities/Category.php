@@ -283,8 +283,14 @@ class Category extends Model
         $category->save();
     }
 
+    static public function updateProductsCntToZero()
+    {
+        Category::whereActive(true)->update(['products_cnt' => 0]);
+    }
+
     static public function updateProductCnt()
     {
+        self::updateProductsCntToZero();
         $url = 'https://5element.by/ajax/catalog_category_list.php?SECTION_ID=';
         $categories = Category::where('root_id', '>', 0)->get();
         $mc = new MultiCurl();
@@ -441,13 +447,13 @@ class Category extends Model
 
 // ОБЩИЕ ФУНКЦИИ ДЛЯ ВСЕХ МАГАЗИНОВ
 // максимаольное кол-во в категории и в магазине
-    public static function maxProductCategory($shop_id=0, $category_id=0)
+    public static function maxProductCategory($shop_id = 0, $category_id = 0)
     {
         if ($category_id == 0) {
-     // echo $shop_id.' '.$category_id;
-           echo Category::whereShopId($shop_id)->whereActive(true)->sum('products_cnt');
+            // echo $shop_id.' '.$category_id;
+            echo Category::whereShopId($shop_id)->whereActive(true)->sum('products_cnt');
         } else {
-           echo Category::whereShopId($shop_id)->whereActive(true)->whereSiteId($category_id)->value('products_cnt');
+            echo Category::whereShopId($shop_id)->whereActive(true)->whereSiteId($category_id)->value('products_cnt');
         }
     }
 

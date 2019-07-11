@@ -232,6 +232,11 @@
                     caption: 'Операции',
                     hint: 'Обновить данные',
                     icon: 'repeat',
+                    onClick: this.updateProducts
+                }, {
+                    caption: 'Операции',
+                    hint: 'Обновить кол-во в категории',
+                    icon: 'repeat',
                     onClick: this.updateProductsCnt
                 }],
                 // столбцы
@@ -279,12 +284,18 @@
         methods: {
             route: route,
             updateProductsCnt() {
-            axios.get(route('ProdСategoriesPars'));
+                return axios.get(route('ProdСategoriesPars'))
+                    .then((response) => {
+                        return response.data;
+                    });
+             console.log('updateProductsCnt');
+            },
+            updateProducts() {
               axios.get(`api/categories_active_cnt/1`).then(response => {
                   this.categories=response.data
                 });
                 this.popupVisible = true;
-                console.log('updateProductsCnt');
+                console.log('updateProducts');
             },
             addMenuItems(e) {
                 console.log(e.target);

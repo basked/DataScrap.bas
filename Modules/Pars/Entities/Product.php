@@ -185,6 +185,7 @@ class Product extends Model
     static public function categoryPars($site_id)
     {
         //   Product::truncate();
+       // dd('basket');
         if (Category::where('site_id', '=', $site_id)->where('active', '=', true)->exists()) {
             $base_url = 'https://5element.by/ajax/catalog_category_list.php?SECTION_ID=';
             $mc = new MultiCurl();
