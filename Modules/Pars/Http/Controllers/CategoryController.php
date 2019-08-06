@@ -2,6 +2,7 @@
 
 namespace Modules\Pars\Http\Controllers;
 
+use function Couchbase\defaultDecoder;
 use Curl\MultiCurl;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
@@ -239,6 +240,7 @@ class CategoryController extends Controller
 
   /// // парсинг категорий 21 века
    public function categoriesPars_21(){
+        dd('categories Pars');
        Category::categoriesPars_21();
    }
 

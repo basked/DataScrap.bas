@@ -10,17 +10,20 @@
                 class="popup"
                 title="Категории для парсинга"
         >
-            <dx-scroll-view >
+            <dx-scroll-view>
                 <ul>
                     <li v-for="category in categories">
                         <!--<p> Id={{category.category_id }}, Name={{category.name}}, MaxCnt={{category.max_cnt}}, CurrentCnt={{category.curr_cnt}} </p>-->
-                        <p><bas-progress-bar2 :propsMaxCnt=category.max_cnt :propsName=category.name :propsCategoryId=category.category_id > </bas-progress-bar2>  </p>
+                        <p>
+                            <bas-progress-bar2 :propsMaxCnt=category.max_cnt :propsName=category.name
+                                               :propsCategoryId=category.category_id></bas-progress-bar2>
+                        </p>
                     </li>
 
                     <!--<li> <bas-progress-bar :propsMaxValue="500"></bas-progress-bar>  </li>-->
                     <!--<li> <bas-progress-bar :propsMaxValue="300"></bas-progress-bar>  </li>-->
 
-               </ul>
+                </ul>
             </dx-scroll-view>
         </dx-popup>
 
@@ -97,20 +100,20 @@
 </template>
 <script>
 
-    import {DxScrollView, DxProgressBar , DxCheckBox, DxSelectBox} from 'devextreme-vue';
+    import {DxCheckBox, DxProgressBar, DxScrollView, DxSelectBox} from 'devextreme-vue';
     import {
-        DxDataGrid,
         DxColumn,
-        DxPaging,
-        DxPager,
+        DxDataGrid,
         DxEditing,
-        DxLookup,
-        DxGroupPanel,
-        DxGrouping,
-        DxScrolling,
-        DxSearchPanel,
         DxFilterRow,
-        DxHeaderFilter
+        DxGrouping,
+        DxGroupPanel,
+        DxHeaderFilter,
+        DxLookup,
+        DxPager,
+        DxPaging,
+        DxScrolling,
+        DxSearchPanel
     } from 'devextreme-vue/data-grid';
     import {DxSwitch} from 'devextreme-vue/switch';
     import CustomStore from 'devextreme/data/custom_store';
@@ -199,7 +202,7 @@
         props: ['homeRoute'],
         data() {
             return {
-                categories:[],
+                categories: [],
                 // для popup
                 shops: [{
                     'ID': 7,
@@ -231,7 +234,7 @@
                 editButtons: ['edit', 'delete', {
                     caption: 'Операции',
                     hint: 'Обновить данные',
-                    icon: 'repeat',
+                    icon: 'globe',
                     onClick: this.updateProducts
                 }, {
                     caption: 'Операции',
@@ -283,19 +286,21 @@
         },
         methods: {
             route: route,
-            updateProductsCnt() {
-                return axios.get(route('ProdСategoriesPars'))
-                    .then((response) => {
-                        return response.data;
-                    });
-             console.log('updateProductsCnt');
-            },
+
             updateProducts() {
-              axios.get(`api/categories_active_cnt/1`).then(response => {
-                  this.categories=response.data
+                axios.get(`api/categories_active_cnt/1`).then(response => {
+                    this.categories = response.data
                 });
                 this.popupVisible = true;
                 console.log('updateProducts');
+            },
+            updateProductsCnt() {
+                return axios.get(route('ProdСategoriesPars'))
+                    .then((response) => {
+                        console.log(response.data)
+                        return response.data;
+                    });
+                console.log('updateProductsCnt');
             },
             addMenuItems(e) {
                 console.log(e.target);

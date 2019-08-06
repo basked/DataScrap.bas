@@ -339,7 +339,7 @@ class Product extends Model
         $mc->setConcurrency(60);
         $mc->setTimeout(160);
         $categories = Category::whereActive(true)->whereShopId(2)->where('products_cnt', '>', 0)->get(['url', 'products_cnt']);
-
+       dd( $categories );
         foreach ($categories as $category) {
             for ($i = 1; $i <= ceil($category->products_cnt / 60); $i++) {
                 $mc->addGet($base_url . $category->url . 'page:' . $i . '/');

@@ -1,0 +1,14 @@
+{
+    "name": "Skills",
+    "alias": "skills",
+    "description": "",
+    "keywords": [],
+    "active": 1,
+    "order": 0,
+    "providers": [
+        "Modules\\Skills\\Providers\\SkillsServiceProvider"
+    ],
+    "aliases": {},
+    "files": [],
+    "requires": []
+}
