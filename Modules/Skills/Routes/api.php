@@ -24,8 +24,11 @@ Route::group(['prefix' => 'skills'], function () {
         dd($request);
     });
 
-    Route::get('/basked', function (Request $request) {
+    Route::get('/bass', function (Request $request) {
         dd($request);
     });
 
+
+
+    Route::resource('/languages', 'LanguageController');
 });
