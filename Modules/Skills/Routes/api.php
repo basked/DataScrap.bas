@@ -1,6 +1,7 @@
 <?php
 
 use Illuminate\Http\Request;
+use Modules\Skills\Http\Controllers;
 use Modules\Skills\Http\Controllers\ArticleRelationshipController;
 
 /*

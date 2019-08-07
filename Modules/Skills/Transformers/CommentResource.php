@@ -4,7 +4,7 @@ namespace Modules\Skills\Transformers;
 
 use Illuminate\Http\Resources\Json\Resource;
 
-class CommentsResource extends Resource
+class CommentResource extends Resource
 {
     /**
      * Transform the resource into an array.

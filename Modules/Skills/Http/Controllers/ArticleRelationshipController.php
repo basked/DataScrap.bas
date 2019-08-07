@@ -4,7 +4,7 @@ namespace Modules\Skills\Http\Controllers;
 
 use Modules\Skills\Entities\Article;
 use Modules\Skills\Transformers\AutorResource;
-use Modules\Skills\Transformers\CommentsResource;
+use Modules\Skills\Transformers\CommentResource;
 use Illuminate\Routing\Controller;
 
 class ArticleRelationshipController extends Controller
@@ -16,6 +16,6 @@ class ArticleRelationshipController extends Controller
 
     public function comments(Article $article)
     {
-        return new CommentsResource($article->comments);
+        return new CommentResource($article->comments);
     }
 }
