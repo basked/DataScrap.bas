@@ -11,7 +11,7 @@ class Article extends Model
 
     public function autor()
     {
-        return $this->belongsTo(Autor::class);
+        return $this->belongsTo(Autor::class, 'autor_id','id');
     }
 
     public function language()

@@ -14,6 +14,7 @@ class AutorResource extends Resource
      */
     public function toArray($request)
     {
+
         return [
             'type' => 'autor',
             'id' => (string)$this->id,

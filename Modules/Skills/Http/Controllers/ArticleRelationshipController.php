@@ -12,6 +12,7 @@ class ArticleRelationshipController extends Controller
 {
     public function autor(Article $article)
     {
+
         return new AutorResource($article->autor);
     }
 

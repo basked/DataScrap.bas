@@ -15,8 +15,8 @@ class CreateSkillsArticlesTable extends Migration
     {
         Schema::create('skills_articles', function (Blueprint $table) {
             $table->bigIncrements('id');
-            $table->bigInteger('author_id')->unsigned();
-            $table->foreign('author_id')->references('id')->on('skills_autors')->onDelete('cascade');
+            $table->bigInteger('autor_id')->unsigned();
+            $table->foreign('autor_id')->references('id')->on('skills_autors')->onDelete('cascade');
             $table->bigInteger('language_id')->unsigned();
             $table->foreign('language_id')->references('id')->on('skills_languages')->onDelete('cascade');
             $table->string('title');

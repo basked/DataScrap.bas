@@ -2,7 +2,7 @@
 
 use Illuminate\Http\Request;
 use Modules\Skills\Http\Controllers;
-use Modules\Skills\Http\Controllers\ArticleRelationshipController;
+
 
 
 /*
@@ -77,7 +77,7 @@ Route::group(['prefix' => 'skills'], function () {
     Route::get(
         'articles/{article}/relationships/autor',
         [
-            'uses' => ArticleRelationshipController::class . '@autor',
+            'uses' => ArticleRelationshipController::class. '@autor',
             'as' => 'skills.articles.relationships.autor',
         ]
     );
