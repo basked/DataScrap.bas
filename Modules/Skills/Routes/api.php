@@ -4,6 +4,7 @@ use Illuminate\Http\Request;
 use Modules\Skills\Http\Controllers;
 use Modules\Skills\Http\Controllers\ArticleRelationshipController;
 
+
 /*
 |--------------------------------------------------------------------------
 | API Routes
@@ -74,16 +75,16 @@ Route::group(['prefix' => 'skills'], function () {
     ]]);
 
     Route::get(
-        'articles/{article}/relationships/author',
+        'articles/{article}/relationships/autor',
         [
-            'uses' => ArticleRelationshipController::class . '@author',
-            'as' => 'skills.articles.relationships.author',
+            'uses' => ArticleRelationshipController::class . '@autor',
+            'as' => 'skills.articles.relationships.autor',
         ]
     );
     Route::get(
-        'articles/{article}/author',
+        'articles/{article}/autor',
         [
-            'uses' => ArticleRelationshipController::class . '@author',
+            'uses' => ArticleRelationshipController::class . '@autor',
             'as' => 'skills.articles.autor',
         ]
     );

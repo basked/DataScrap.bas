@@ -7,6 +7,7 @@ use Illuminate\Http\Response;
 use Illuminate\Routing\Controller;
 use Modules\Skills\Entities\Article;
 use Modules\Skills\Transformers\ArticleResource;
+use Modules\Skills\Transformers\ArticlesResource;
 
 class ArticleController extends Controller
 {

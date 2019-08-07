@@ -17,7 +17,7 @@ class ArticleRelationshipResource extends Resource
         return [
             'author'   => [
                 'links' => [
-                    'self'    => route('skills.articles.relationships.author', ['article' => $this->id]),
+                    'self'    => route('skills.articles.relationships.autor', ['article' => $this->id]),
                     'related' => route('skills.articles.autor', ['article' => $this->id]),
                 ],
                 'data'  => new AutorIdentifierResource($this->autor),

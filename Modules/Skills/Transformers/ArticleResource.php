@@ -2,57 +2,31 @@
 
 namespace Modules\Skills\Transformers;
 
-use Illuminate\Http\Resources\Json\ResourceCollection;
-use Illuminate\Support\Collection;
-use Modules\Skills\Entities\Autor;
-use Modules\Skills\Entities\Comment;
+use Illuminate\Http\Resources\Json\Resource;
 
-class ArticleResource extends ResourceCollection
+class ArticleResource extends Resource
 {
     /**
-     * Преобразование коллекции ресурсов в массив.
+     * Transform the resource into an array.
      *
      * @param  \Illuminate\Http\Request
-     *
      * @return array
      */
     public function toArray($request)
     {
         return [
-            'data' => ArticleResource::collection($this->collection),
-        ];
-    }
-    public function with($request)
-    {
-        $comments = $this->collection->flatMap(
-            function ($article) {
-                return $article->comments;
-            }
-        );
-        $authors  = $this->collection->map(
-            function ($article) {
-                return $article->author;
-            }
-        );
-        $included = $authors->merge($comments)->unique();
-        return [
-            'links'    => [
-                'self' => route('articles.index'),
+            'type'          => 'articles',
+            'id'            => (string)$this->id,
+            'attributes'    => [
+                'title' => $this->title,
+                'body' => $this->body,
+                'created_at'=>$this->created_at,
+                'updated_at'=>$this->updated_at,
             ],
-            'included' => $this->withIncluded($included),
+            'relationships' => new ArticleRelationshipResource($this),
+            'links'         => [
+                'self' => route('skills.articles.show', ['article' => $this->id]),
+            ],
         ];
-    }
-    private function withIncluded(Collection $included)
-    {
-        return $included->map(
-            function ($include) {
-                if ($include instanceof Autor) {
-                    return new AutorResource($include);
-                }
-                if ($include instanceof Comment) {
-                    return new CommentResource($include);
-                }
-            }
-        );
     }
 }

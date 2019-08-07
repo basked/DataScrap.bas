@@ -2,14 +2,15 @@
 
 namespace Modules\Skills\Http\Controllers;
 
+use Illuminate\Routing\Controller;
 use Modules\Skills\Entities\Article;
 use Modules\Skills\Transformers\AutorResource;
 use Modules\Skills\Transformers\CommentResource;
-use Illuminate\Routing\Controller;
+
 
 class ArticleRelationshipController extends Controller
 {
-    public function author(Article $article)
+    public function autor(Article $article)
     {
         return new AutorResource($article->autor);
     }
