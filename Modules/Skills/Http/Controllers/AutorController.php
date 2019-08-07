@@ -5,10 +5,11 @@ namespace Modules\Skills\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Routing\Controller;
-use Modules\Skills\Entities\Language;
+use Modules\Skills\Entities\Autor;
+use Modules\Skills\Transformers\AutorResource;
 use Modules\Skills\Transformers\LanguageResource;
 
-class LanguageController extends Controller
+class AutorController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -41,13 +42,13 @@ class LanguageController extends Controller
     /**
      * Show the specified resource.
      * @param int $id
-     * @return LanguageResource
+     * @return AutorResource
      */
-    public function show(Language $language)
+    public function show(Autor $autor)
     {
-         // data не должна быть на верхнем уровне поэтомиу оборачиваем через wrapper
-        LanguageResource::withoutWrapping();
-        return new LanguageResource($language);
+        // data не должна быть на верхнем уровне поэтомиу оборачиваем через wrapper
+        AutorResource::withoutWrapping();
+        return new AutorResource($autor);
     }
 
     /**

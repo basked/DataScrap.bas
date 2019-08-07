@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CreateSkillsLanguagesTable extends Migration
+class CreateSkillsAutorsTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,11 +13,12 @@ class CreateSkillsLanguagesTable extends Migration
      */
     public function up()
     {
-        Schema::create('skills_languages', function (Blueprint $table) {
+        Schema::create('skills_autors', function (Blueprint $table) {
             $table->bigIncrements('id');
-            $table->string('name')->comment('Наименование языка программирования');
-            $table->string('description')->comment('Краткое описание');
-            $table->timestamps();
+            $table->string('first_name');
+            $table->string('last_name');
+            $table->string('email');
+            $table->timestamps();;
         });
     }
 
@@ -28,6 +29,6 @@ class CreateSkillsLanguagesTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('skills_languages');
+        Schema::dropIfExists('skills_autors');
     }
 }

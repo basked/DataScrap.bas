@@ -4,10 +4,10 @@ namespace Modules\Skills\Entities;
 
 use Illuminate\Database\Eloquent\Model;
 
-class Language extends Model
+class Autor extends Model
 {
     protected $fillable = [];
-    protected $table='skills_languages';
+    protected $table = 'skills_autors';
 
     public function articles()
     {

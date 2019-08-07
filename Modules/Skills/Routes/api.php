@@ -1,6 +1,7 @@
 <?php
 
 use Illuminate\Http\Request;
+use Modules\Skills\Http\Controllers\ArticleRelationshipController;
 
 /*
 |--------------------------------------------------------------------------
@@ -13,22 +14,92 @@ use Illuminate\Http\Request;
 |
 */
 
+
 Route::middleware('auth:api')->get('/skills', function (Request $request) {
 //    return $request->user();
     dd('api skills');
 });
 
+
 Route::group(['prefix' => 'skills'], function () {
+    Route::resource('languages', 'LanguageController', ['names' => [
+        'store' => 'skills.languages.store',
+        'index' => 'skills.languages.index',
+        'create' => 'skills.languages.create',
+        'destroy' => 'skills.languages.destroy',
+        'update' => 'skills.languages.update',
+        'show' => 'skills.languages.show',
+        'edit' => 'skills.languages.edit',
+    ]]);
+    // меняем наименование ресурсных роутов по схеме префикс.ресурс.действие
+    Route::resource('articles', 'ArticleController', ['names' => [
+        'store' => 'skills.articles.store',
+        'index' => 'skills.articles.index',
+        'create' => 'skills.articles.create',
+        'destroy' => 'skills.articles.destroy',
+        'update' => 'skills.articles.update',
+        'show' => 'skills.articles.show',
+        'edit' => 'skills.articles.edit',
+    ]]);
 
-    Route::get('/basket', function (Request $request) {
-        dd($request);
-    });
+    Route::resource('autors', 'AutorController', ['names' => [
+        'store' => 'skills.autors.store',
+        'index' => 'skills.autors.index',
+        'create' => 'skills.autors.create',
+        'destroy' => 'skills.autors.destroy',
+        'update' => 'skills.autors.update',
+        'show' => 'skills.autors.show',
+        'edit' => 'skills.autors.edit',
+    ]]);
 
-    Route::get('/bass', function (Request $request) {
-        dd($request);
-    });
+    Route::resource('comments', 'CommentController', ['names' => [
+        'store' => 'skills.comments.store',
+        'index' => 'skills.comments.index',
+        'create' => 'skills.comments.create',
+        'destroy' => 'skills.comments.destroy',
+        'update' => 'skills.comments.update',
+        'show' => 'skills.comments.show',
+        'edit' => 'skills.comments.edit',
+    ]]);
+
+    Route::resource('languages', 'LanguageController', ['names' => [
+        'store' => 'skills.languages.store',
+        'index' => 'skills.languages.index',
+        'create' => 'skills.languages.create',
+        'destroy' => 'skills.languages.destroy',
+        'update' => 'skills.languages.update',
+        'show' => 'skills.languages.show',
+        'edit' => 'skills.languages.edit',
+    ]]);
+
+    Route::get(
+        'articles/{article}/relationships/author',
+        [
+            'uses' => ArticleRelationshipController::class . '@author',
+            'as' => 'skills.articles.relationships.author',
+        ]
+    );
+    Route::get(
+        'articles/{article}/author',
+        [
+            'uses' => ArticleRelationshipController::class . '@author',
+            'as' => 'skills.articles.autor',
+        ]
+    );
+    Route::get(
+        'articles/{article}/relationships/comments',
+        [
+            'uses' => ArticleRelationshipController::class . '@comments',
+            'as' => 'skills.articles.relationships.comments',
+        ]
+    );
+    Route::get(
+        'articles/{article}/comments',
+        [
+            'uses' => ArticleRelationshipController::class . '@comments',
+            'as' => 'skills.articles.comments',
+        ]
+    );
 
 
-
-    Route::resource('/languages', 'LanguageController');
 });

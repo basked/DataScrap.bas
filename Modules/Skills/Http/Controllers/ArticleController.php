@@ -5,10 +5,10 @@ namespace Modules\Skills\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Routing\Controller;
-use Modules\Skills\Entities\Language;
-use Modules\Skills\Transformers\LanguageResource;
+use Modules\Skills\Entities\Article;
+use Modules\Skills\Transformers\ArticleResource;
 
-class LanguageController extends Controller
+class ArticleController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -41,13 +41,12 @@ class LanguageController extends Controller
     /**
      * Show the specified resource.
      * @param int $id
-     * @return LanguageResource
+     * @return ArticleResource
      */
-    public function show(Language $language)
+    public function show(Article $article)
     {
-         // data не должна быть на верхнем уровне поэтомиу оборачиваем через wrapper
-        LanguageResource::withoutWrapping();
-        return new LanguageResource($language);
+        ArticleResource::withoutWrapping();
+        return new ArticleResource($article);
     }
 
     /**

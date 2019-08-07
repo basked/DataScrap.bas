@@ -5,10 +5,8 @@ namespace Modules\Skills\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Routing\Controller;
-use Modules\Skills\Entities\Language;
-use Modules\Skills\Transformers\LanguageResource;
 
-class LanguageController extends Controller
+class CommentController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -41,13 +39,11 @@ class LanguageController extends Controller
     /**
      * Show the specified resource.
      * @param int $id
-     * @return LanguageResource
+     * @return Response
      */
-    public function show(Language $language)
+    public function show($id)
     {
-         // data не должна быть на верхнем уровне поэтомиу оборачиваем через wrapper
-        LanguageResource::withoutWrapping();
-        return new LanguageResource($language);
+        return view('skills::show');
     }
 
     /**
