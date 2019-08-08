@@ -1,6 +1,7 @@
 <?php
 
 use Illuminate\Http\Request;
+use Modules\Skills\Transformers\LanguagesCollection;
 
 
 /*

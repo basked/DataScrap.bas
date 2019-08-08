@@ -7,16 +7,18 @@ use Illuminate\Http\Response;
 use Illuminate\Routing\Controller;
 use Modules\Skills\Entities\Language;
 use Modules\Skills\Transformers\LanguageResource;
+use Modules\Skills\Transformers\LanguagesCollection;
 
 class LanguageController extends Controller
 {
     /**
      * Display a listing of the resource.
-     * @return Response
+     * @return LanguagesCollection
      */
     public function index()
     {
-        return view('skills::index');
+        // data не должна быть на верхнем уровне поэтомиу оборачиваем через wrapper
+        return new LanguagesCollection(Language::all());
     }
 
     /**
