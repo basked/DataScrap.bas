@@ -22,6 +22,13 @@ class ArticleRelationshipResource extends Resource
                 ],
                 'data'  => new AutorIdentifierResource($this->autor),
             ],
+            'language'   => [
+                'links' => [
+                    'self'    => route('skills.articles.relationships.language', ['article' => $this->id]),
+                    'related' => route('skills.articles.language', ['article' => $this->id]),
+                ],
+                'data'  => new LanguageIdentifierResource($this->autor),
+            ],
             'comments' => (new ArticleCommentsRelationshipResource($this->comments))->additional(['article' => $this]),
         ];
     }

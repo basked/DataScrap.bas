@@ -1,8 +1,6 @@
 <?php
 
 use Illuminate\Http\Request;
-use Modules\Skills\Http\Controllers;
-
 
 
 /*
@@ -73,7 +71,7 @@ Route::group(['prefix' => 'skills'], function () {
         'show' => 'skills.languages.show',
         'edit' => 'skills.languages.edit',
     ]]);
-
+   // ссылки на автора
     Route::get(
         'articles/{article}/relationships/autor',
         [
@@ -88,6 +86,7 @@ Route::group(['prefix' => 'skills'], function () {
             'as' => 'skills.articles.autor',
         ]
     );
+    //ссылки на коментарии
     Route::get(
         'articles/{article}/relationships/comments',
         [
@@ -102,6 +101,20 @@ Route::group(['prefix' => 'skills'], function () {
             'as' => 'skills.articles.comments',
         ]
     );
-
+    //ссылки на zpsr программирования
+    Route::get(
+        'articles/{article}/relationships/language',
+        [
+            'uses' => ArticleRelationshipController::class . '@language',
+            'as' => 'skills.articles.relationships.language',
+        ]
+    );
+    Route::get(
+        'articles/{article}/language',
+        [
+            'uses' => ArticleRelationshipController::class . '@language',
+            'as' => 'skills.articles.language',
+        ]
+    );
 
 });

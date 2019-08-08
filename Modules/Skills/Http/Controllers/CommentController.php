@@ -5,6 +5,8 @@ namespace Modules\Skills\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Routing\Controller;
+use Modules\Skills\Entities\Comment;
+use Modules\Skills\Transformers\CommentResource;
 
 class CommentController extends Controller
 {
@@ -39,11 +41,14 @@ class CommentController extends Controller
     /**
      * Show the specified resource.
      * @param int $id
-     * @return Response
+     * @return CommentResource
      */
-    public function show($id)
+    public function show(Comment $comment)
     {
-        return view('skills::show');
+
+            // data не должна быть на верхнем уровне поэтомиу оборачиваем через wrapper
+            CommentResource::withoutWrapping();
+            return new CommentResource($comment);
     }
 
     /**

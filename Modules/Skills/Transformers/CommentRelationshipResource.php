@@ -9,7 +9,7 @@ class CommentRelationshipResource extends Resource
     public function toArray($request)
     {
         return [
-            'author'   => [
+            'autor'   => [
                 'data'  => new AutorIdentifierResource($this->author),
             ],
         ];

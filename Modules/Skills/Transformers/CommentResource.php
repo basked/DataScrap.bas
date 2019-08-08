@@ -14,7 +14,6 @@ class CommentResource extends Resource
      */
     public function toArray($request)
     {
-
         return [
             'type'          => 'comments',
             'id'            => (string)$this->id,

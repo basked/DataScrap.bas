@@ -14,6 +14,9 @@ class CommentIdentifierResource extends Resource
      */
     public function toArray($request)
     {
-        return parent::toArray($request);
+        return [
+            'type'          => 'comments',
+            'id'            => (string)$this->id,
+        ];
     }
 }
