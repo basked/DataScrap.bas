@@ -1,6 +1,8 @@
 <?php
 
 use Illuminate\Http\Request;
+
+use Illuminate\Support\Facades\Route;
 use Modules\Skills\Transformers\LanguagesCollection;
 
 
@@ -63,7 +65,7 @@ Route::group(['prefix' => 'skills'], function () {
         'edit' => 'skills.comments.edit',
     ]]);
 
-    Route::resource('languages', 'LanguageController', ['names' => [
+    Route::apiResource('languages', 'LanguageController', ['names' => [
         'store' => 'skills.languages.store',
         'index' => 'skills.languages.index',
         'create' => 'skills.languages.create',
@@ -72,6 +74,8 @@ Route::group(['prefix' => 'skills'], function () {
         'show' => 'skills.languages.show',
         'edit' => 'skills.languages.edit',
     ]]);
+
+
    // ссылки на автора
     Route::get(
         'articles/{article}/relationships/autor',
