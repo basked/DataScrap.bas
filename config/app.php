@@ -178,7 +178,8 @@ return [
         App\Providers\RouteServiceProvider::class,
         Barryvdh\LaravelIdeHelper\IdeHelperServiceProvider::class,
         // для работы с именованными роутами
-        Tightenco\Ziggy\ZiggyServiceProvider::class
+        Tightenco\Ziggy\ZiggyServiceProvider::class,
+        Tymon\JWTAuth\Providers\LaravelServiceProvider::class,
     ],
 
     /*

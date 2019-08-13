@@ -1,5 +1,5 @@
 {
-    "name": "nwidart/skills",
+    "name": "nwidart/nuxt",
     "description": "",
     "authors": [
         {
@@ -10,16 +10,16 @@
     "extra": {
         "laravel": {
             "providers": [
-                "Modules\\Skills\\Providers\\SkillsServiceProvider"
+                "Modules\\Nuxt\\Providers\\NuxtServiceProvider"
             ],
             "aliases": {
-
+                
             }
         }
     },
     "autoload": {
         "psr-4": {
-            "Modules\\Skills\\": ""
+            "Modules\\Nuxt\\": ""
         }
     }
 }
