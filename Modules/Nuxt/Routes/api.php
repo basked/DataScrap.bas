@@ -16,5 +16,6 @@
 Route::group(['prefix' => 'nuxt'], function () {
     Route::post('/register', 'AuthController@register');
     Route::post('/login', 'AuthController@login');
-    Route::post('/user', 'AuthController@user');
+    Route::post('/logout', 'AuthController@logout');
+    Route::get('/user', 'AuthController@user');
 });

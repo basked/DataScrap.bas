@@ -3,12 +3,12 @@
 namespace Modules\Nuxt\Http\Controllers;
 
 use App\User;
-use Illuminate\Http\Request;
+
 use Modules\Nuxt\Http\Requests\UserLoginRequest;
 use Modules\Nuxt\Http\Requests\UserRegisterRequest;
 use Modules\Nuxt\Transformers\UserResource;
 use Nwidart\Modules\Routing\Controller;
-
+use Illuminate\Http\Request;
 class AuthController extends Controller
 {
     public function register(UserRegisterRequest $request)
@@ -50,6 +50,13 @@ class AuthController extends Controller
             ]
         );
     }
+
+    public function logout(UserLoginRequest $request)
+    {
+       auth()->logout();
+    }
+
+
 
     public function user(Request $request){
         return new UserResource($request->user());

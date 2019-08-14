@@ -15,12 +15,13 @@ class UserResource extends Resource
      */
     public function toArray($request)
     {
-//        return parent::toArray($request);
+//      return parent::toArray($request);
         return [
             'name' => $this->name,
             'email' => $this->email,
+            'email_verifired_at' => $this->email_verifired_at,
             'created_at' => $this->created_at,
-            'updated_at' => $this->updated_at,
+            'updated_at' => $this->updated_at
         ];
     }
 }
