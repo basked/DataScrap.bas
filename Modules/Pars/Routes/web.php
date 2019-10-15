@@ -16,6 +16,7 @@ use Curl\MultiCurl;
 use Illuminate\Support\Facades\DB;
 use Modules\Pars\Entities\Category;
 use Modules\Pars\Entities\Product;
+use function MongoDB\BSON\toJSON;
 use Symfony\Component\DomCrawler\Crawler;
 
 Route::prefix('pars')->group(function () {
@@ -105,7 +106,7 @@ Route::prefix('pars')->group(function () {
         };
         $data = $curl->post($base_url);
         $crawler = new Crawler($data);
-        $crawler->filter('#j-search_result')->filter('ul>li')->each(function (Crawler $node, $i) use ($products_all) {
+        $crawler->filter('#j-search_result')->filter('ul>li')->each(function (Crawler $node, $i)  {
 
             $products['data-code'] = $node->filter('dl>dt')->filter('.result__root')->filter(' .g-price.result__price.cr-price__in>span')->filter('.g-item-data.j-item-data')->attr('data-code');
             $products['data-name'] = $node->filter('dl>dt')->filter('.result__root')->filter(' .g-price.result__price.cr-price__in>span')->filter('.g-item-data.j-item-data')->attr('data-name');
@@ -163,6 +164,28 @@ Route::prefix('pars')->group(function () {
 
     /////////////////////////////////////////////////21 ВЕК КОНЕЦ/////////////////////////////////////////////////
 
+
+
+    Route::get('/products/miy', function () {
+
+        $base_url = 'https://diy.by/catalog/instrument_and_electrical/';
+        $curl = new Curl();
+        $curl->setOpt(CURLOPT_RETURNTRANSFER, TRUE);
+        $curl->setOpt(CURLOPT_SSL_VERIFYPEER, FALSE);
+        if (env('USE_PROXY')) {
+            $curl->setProxy('172.16.15.33', 3128, 'gt-asup6', 'teksab');
+        };
+        $data = $curl->post($base_url);
+        $crawler = new Crawler($data);
+        $products= $crawler->filter('.row.dark ')->each(function (Crawler $node, $i) {
+            $products['name'] =trim( $node->filter('.td_name')->text());
+            $products['proizv'] = $node->filter('.td_proizv')->text();
+            $products['nalich'] = $node->filter('.td_nalich')->text();
+            $products['price'] = $node->filter('.td_price')->text();
+            return $products;
+        });
+        return   json_encode( $products);
+    });
 
 });
 
